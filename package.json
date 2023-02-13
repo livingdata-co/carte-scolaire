@@ -1,0 +1,32 @@
+{
+  "name": "carte-scolaire",
+  "version": "0.0.0",
+  "repository": "https://github.com/livingdata-co/carte-scolaire",
+  "author": "Jérôme Desboeufs <jerome@livingdata.co>",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "download-sources": "node download-sources.js",
+    "lint": "xo"
+  },
+  "dependencies": {
+    "got": "^12.5.3"
+  },
+  "devDependencies": {
+    "xo": "^0.53.1"
+  },
+  "xo": {
+    "semicolon": false,
+    "space": 2,
+    "rules": {
+      "comma-dangle": [
+        "error",
+        "never"
+      ]
+    }
+  },
+  "engines": {
+    "node": ">= 18.12 < 19"
+  }
+}
