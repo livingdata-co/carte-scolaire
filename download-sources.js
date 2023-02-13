@@ -4,7 +4,7 @@ import got from 'got'
 
 const sourcesPath = new URL('sources/', import.meta.url)
 
-await mkdir(sourcesPath)
+await mkdir(sourcesPath, {recursive: true})
 
 const CARTE_SCOLAIRE_DATASET_URL = 'https://data.education.gouv.fr/explore/dataset/fr-en-carte-scolaire-colleges-publics/download?format=json&timezone=Europe/Berlin&use_labels_for_header=false'
 
