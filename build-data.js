@@ -15,7 +15,7 @@ async function readCarteScolaireRows() {
 }
 
 function communeFiltered(codeCommune) {
-  return codeCommune.slice(0, 2) >= '98' || codeCommune.slice(0, 3) >= 977 || codeCommune.startsWith('975')
+  return codeCommune.slice(0, 2) >= '98' || codeCommune.slice(0, 3) >= '977' || codeCommune.startsWith('975')
 }
 
 const carteScolaireRows = await readCarteScolaireRows()
