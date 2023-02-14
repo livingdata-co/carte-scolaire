@@ -4,12 +4,16 @@
 import {mkdir, readFile, writeFile, access} from 'node:fs/promises'
 import {groupBy} from 'lodash-es'
 import {featureCollection, feature} from '@turf/turf'
+import {getCommunes} from './lib/cog.js'
 import {buildCarteSecteurFeatures} from './lib/carte-secteur.js'
 import {getContour} from './lib/contours.js'
 
 const distPath = new URL('dist/', import.meta.url)
 
 await mkdir(distPath, {recursive: true})
+
+const communes = await getCommunes()
+const communesActuelles = communes.filter(c => ['commune-actuelle', 'arrondissement-municipal'].includes(c.type))
 
 async function readCarteScolaireRows() {
   const datasetText = await readFile(new URL('sources/carte-scolaire.json', import.meta.url), {encoding: 'utf8'})
@@ -33,7 +37,9 @@ const carteScolaireRows = await readCarteScolaireRows()
 
 const communesRows = groupBy(carteScolaireRows, 'code_insee')
 
-for (const codeCommune of Object.keys(communesRows)) {
+for (const commune of communesActuelles) {
+  const {code: codeCommune} = commune
+
   if (communeFiltered(codeCommune)) {
     continue
   }
@@ -45,6 +51,13 @@ for (const codeCommune of Object.keys(communesRows)) {
   }
 
   const communeRows = communesRows[codeCommune]
+
+  if (!communeRows) {
+    await writeWholeCommuneFeature(codeCommune, filePath, {
+      erreur: 'Données non disponibles sur cette commune'
+    })
+    continue
+  }
 
   if (communeRows.length > 1) {
     const carteSecteurFeatures = await buildCarteSecteurFeatures(

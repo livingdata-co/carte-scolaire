@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@ban-team/adresses-util": "^0.9.0",
+    "@etalab/decoupage-administratif": "^2.3.1",
     "@turf/turf": "^6.5.0",
     "chalk": "^5.2.0",
     "d3-delaunay": "^6.0.2",
