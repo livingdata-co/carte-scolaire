@@ -3,7 +3,7 @@
 
 import {mkdir, readFile, writeFile} from 'node:fs/promises'
 import {featureCollection} from '@turf/turf'
-import {buildCarteSecteurFeatures} from './lib/build-carte-secteur-features.js'
+import {buildCarteSecteurFeatures} from './lib/carte-secteur.js'
 
 const distPath = new URL('dist/', import.meta.url)
 
