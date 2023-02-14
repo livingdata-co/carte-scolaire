@@ -21,19 +21,13 @@ const codesCommunesSecteurs = [...new Set(
 )]
 
 for (const codeCommune of codesCommunesSecteurs) {
-  try {
-    const carteSecteurFeatures = await buildCarteSecteurFeatures(
-      codeCommune,
-      carteScolaireRows.filter(r => r.code_insee === codeCommune)
-    )
+  const carteSecteurFeatures = await buildCarteSecteurFeatures(
+    codeCommune,
+    carteScolaireRows.filter(r => r.code_insee === codeCommune)
+  )
 
-    await writeFile(
-      new URL(`secteur-${codeCommune}.json`, distPath),
-      JSON.stringify(featureCollection(carteSecteurFeatures))
-    )
-
-    console.log(`${codeCommune} => OK`)
-  } catch (error) {
-    console.log(`${codeCommune} => ERREUR => ${error.message}`)
-  }
+  await writeFile(
+    new URL(`secteur-${codeCommune}.json`, distPath),
+    JSON.stringify(featureCollection(carteSecteurFeatures))
+  )
 }
