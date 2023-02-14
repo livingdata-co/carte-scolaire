@@ -34,6 +34,10 @@ for (const codeCommune of codesCommunesSecteurs) {
     carteScolaireRows.filter(r => r.code_insee === codeCommune)
   )
 
+  if (!carteSecteurFeatures) {
+    continue
+  }
+
   await writeFile(
     new URL(`secteur-${codeCommune}.json`, distPath),
     JSON.stringify(featureCollection(carteSecteurFeatures))
