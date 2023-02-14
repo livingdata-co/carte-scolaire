@@ -2,8 +2,10 @@
 /* eslint no-await-in-loop: off */
 
 import {mkdir, readFile, writeFile, access} from 'node:fs/promises'
-import {featureCollection} from '@turf/turf'
+import {groupBy} from 'lodash-es'
+import {featureCollection, feature} from '@turf/turf'
 import {buildCarteSecteurFeatures} from './lib/carte-secteur.js'
+import {getContour} from './lib/contours.js'
 
 const distPath = new URL('dist/', import.meta.url)
 
@@ -29,11 +31,9 @@ async function fileExists(filePath) {
 
 const carteScolaireRows = await readCarteScolaireRows()
 
-const codesCommunesSecteurs = new Set(
-  carteScolaireRows.filter(r => r.secteur_unique === 'N').map(r => r.code_insee)
-)
+const communesRows = groupBy(carteScolaireRows, 'code_insee')
 
-for (const codeCommune of codesCommunesSecteurs) {
+for (const codeCommune of Object.keys(communesRows)) {
   if (communeFiltered(codeCommune)) {
     continue
   }
@@ -44,17 +44,35 @@ for (const codeCommune of codesCommunesSecteurs) {
     continue
   }
 
-  const carteSecteurFeatures = await buildCarteSecteurFeatures(
-    codeCommune,
-    carteScolaireRows.filter(r => r.code_insee === codeCommune)
-  )
+  const communeRows = communesRows[codeCommune]
 
-  if (!carteSecteurFeatures) {
-    continue
+  if (communeRows.length > 1) {
+    const carteSecteurFeatures = await buildCarteSecteurFeatures(
+      codeCommune,
+      communeRows
+    )
+
+    if (carteSecteurFeatures) {
+      await writeFile(
+        filePath,
+        JSON.stringify(featureCollection(carteSecteurFeatures))
+      )
+    } else {
+      await writeWholeCommuneFeature(codeCommune, filePath, {
+        erreur: 'Impossible de créer la carte scolaire de la commune'
+      })
+    }
+  } else {
+    await writeWholeCommuneFeature(codeCommune, filePath, {
+      codeRNE: communeRows[0].code_rne
+    })
   }
+}
 
+async function writeWholeCommuneFeature(codeCommune, filePath, properties) {
+  const contour = await getContour(codeCommune)
   await writeFile(
     filePath,
-    JSON.stringify(featureCollection(carteSecteurFeatures))
+    JSON.stringify(featureCollection([feature(contour.geometry, properties)]))
   )
 }
