@@ -4,7 +4,7 @@
 import {mkdir, readFile, writeFile, access} from 'node:fs/promises'
 import {groupBy} from 'lodash-es'
 import {featureCollection, feature} from '@turf/turf'
-import {getCommunes} from './lib/cog.js'
+import {getCommunes, communeFiltered} from './lib/cog.js'
 import {buildCarteSecteurFeatures} from './lib/carte-secteur.js'
 import {getContour} from './lib/contours.js'
 
@@ -18,10 +18,6 @@ const communesActuelles = communes.filter(c => ['commune-actuelle', 'arrondissem
 async function readCarteScolaireRows() {
   const datasetText = await readFile(new URL('sources/carte-scolaire.json', import.meta.url), {encoding: 'utf8'})
   return JSON.parse(datasetText).map(r => r.fields)
-}
-
-function communeFiltered(codeCommune) {
-  return codeCommune.slice(0, 2) >= '98' || codeCommune.slice(0, 3) >= '977' || codeCommune.startsWith('975')
 }
 
 async function fileExists(filePath) {
