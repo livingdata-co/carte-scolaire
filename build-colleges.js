@@ -44,9 +44,7 @@ async function collegesFileExists() {
 function buildCollegesFeatures() {
   collegesFileExists()
 
-  const collegesFeatures = []
-
-  for (const college of colleges) {
+  return colleges.map(college => {
     const geometry = {
       type: 'Point',
       coordinates: [
@@ -63,14 +61,12 @@ function buildCollegesFeatures() {
       nomCommune: college.libelle_commune
     }
 
-    collegesFeatures.push({
+    return {
       type: 'Feature',
       geometry,
       properties
-    })
-  }
-
-  return collegesFeatures
+    }
+  })
 }
 
 const features = buildCollegesFeatures()
