@@ -2,7 +2,7 @@
 /* eslint no-await-in-loop: off */
 
 import {readFile, writeFile, access} from 'node:fs/promises'
-import {groupBy} from 'lodash-es'
+import {groupBy, keyBy} from 'lodash-es'
 import {featureCollection, feature} from '@turf/turf'
 import {getCommunes, communeFiltered} from './lib/cog.js'
 import {buildCarteSecteurFeatures} from './lib/carte-secteur.js'
@@ -13,10 +13,11 @@ const distPath = new URL('dist/', import.meta.url)
 const communes = await getCommunes()
 const communesActuelles = communes.filter(c => ['commune-actuelle', 'arrondissement-municipal'].includes(c.type))
 
-async function getCollegesProperties() {
+async function getIndexedColleges() {
   const datasetText = await readFile(new URL('dist/colleges.geojson', import.meta.url), {encoding: 'utf8'})
   const {features} = JSON.parse(datasetText)
-  return features.map(({properties}) => properties)
+  const colleges = features.map(({properties}) => properties)
+  return keyBy(colleges, 'codeRNE')
 }
 
 async function readCarteScolaireRows() {
@@ -33,11 +34,10 @@ async function fileExists(filePath) {
   }
 }
 
-const collegesProperties = await getCollegesProperties()
 const carteScolaireRows = await readCarteScolaireRows()
+const colleges = await getIndexedColleges()
 
 const communesRows = groupBy(carteScolaireRows, 'code_insee')
-const colleges = groupBy(collegesProperties, 'codeRNE')
 
 for (const commune of communesActuelles) {
   const {code: codeCommune} = commune
@@ -84,7 +84,7 @@ for (const commune of communesActuelles) {
 
     await writeWholeCommuneFeature(codeCommune, filePath, {
       codeRNE,
-      ...college[0]
+      ...college
     })
   }
 }
