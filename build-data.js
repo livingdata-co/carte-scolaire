@@ -13,6 +13,12 @@ const distPath = new URL('dist/', import.meta.url)
 const communes = await getCommunes()
 const communesActuelles = communes.filter(c => ['commune-actuelle', 'arrondissement-municipal'].includes(c.type))
 
+async function getCollegesProperties() {
+  const datasetText = await readFile(new URL('dist/colleges.geojson', import.meta.url), {encoding: 'utf8'})
+  const {features} = JSON.parse(datasetText)
+  return features.map(({properties}) => properties)
+}
+
 async function readCarteScolaireRows() {
   const datasetText = await readFile(new URL('sources/carte-scolaire.json', import.meta.url), {encoding: 'utf8'})
   return JSON.parse(datasetText).map(r => r.fields)
@@ -27,9 +33,11 @@ async function fileExists(filePath) {
   }
 }
 
+const collegesProperties = await getCollegesProperties()
 const carteScolaireRows = await readCarteScolaireRows()
 
 const communesRows = groupBy(carteScolaireRows, 'code_insee')
+const colleges = groupBy(collegesProperties, 'codeRNE')
 
 for (const commune of communesActuelles) {
   const {code: codeCommune} = commune
@@ -56,7 +64,8 @@ for (const commune of communesActuelles) {
   if (communeRows.length > 1) {
     const carteSecteurFeatures = await buildCarteSecteurFeatures(
       codeCommune,
-      communeRows
+      communeRows,
+      colleges
     )
 
     if (carteSecteurFeatures) {
@@ -70,8 +79,12 @@ for (const commune of communesActuelles) {
       })
     }
   } else {
+    const codeRNE = communeRows[0].code_rne
+    const college = colleges[codeRNE]
+
     await writeWholeCommuneFeature(codeCommune, filePath, {
-      codeRNE: communeRows[0].code_rne
+      codeRNE,
+      ...college[0]
     })
   }
 }
