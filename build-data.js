@@ -1,7 +1,7 @@
 #!/usr/bin/env
 /* eslint no-await-in-loop: off */
 
-import {mkdir, readFile, writeFile, access} from 'node:fs/promises'
+import {readFile, writeFile, access} from 'node:fs/promises'
 import {groupBy} from 'lodash-es'
 import {featureCollection, feature} from '@turf/turf'
 import {getCommunes, communeFiltered} from './lib/cog.js'
@@ -9,8 +9,6 @@ import {buildCarteSecteurFeatures} from './lib/carte-secteur.js'
 import {getContour} from './lib/contours.js'
 
 const distPath = new URL('dist/', import.meta.url)
-
-await mkdir(distPath, {recursive: true})
 
 const communes = await getCommunes()
 const communesActuelles = communes.filter(c => ['commune-actuelle', 'arrondissement-municipal'].includes(c.type))
