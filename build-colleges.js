@@ -1,7 +1,7 @@
 #!/usr/bin/env
 /* eslint no-await-in-loop: off */
 
-import {readFile, writeFile, mkdir, access} from 'node:fs/promises'
+import {readFile, writeFile, mkdir} from 'node:fs/promises'
 import got from 'got'
 import {featureCollection} from '@turf/turf'
 
@@ -32,18 +32,7 @@ function getColleges() {
 
 const colleges = getColleges()
 
-async function collegesFileExists() {
-  try {
-    await access(collegesFilePath)
-    return true
-  } catch {
-    return false
-  }
-}
-
 function buildCollegesFeatures() {
-  collegesFileExists()
-
   return colleges.map(college => {
     const geometry = {
       type: 'Point',
