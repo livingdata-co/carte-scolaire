@@ -47,6 +47,9 @@ for (const commune of communesActuelles) {
   }
 
   if (await fileExists(getCommuneFileUrl(codeCommune))) {
+    const fileData = await readFile(getCommuneFileUrl(codeCommune), {encoding: 'utf8'})
+    const {features} = JSON.parse(fileData)
+    await writeCommuneFeatures(codeCommune, features, false)
     continue
   }
 
@@ -96,12 +99,15 @@ async function writeWholeCommuneFeature(codeCommune, properties) {
   )
 }
 
-async function writeCommuneFeatures(codeCommune, features) {
+async function writeCommuneFeatures(codeCommune, features, writeCommuneFile = true) {
   const fileUrl = getCommuneFileUrl(codeCommune)
-  await writeFile(
-    fileUrl,
-    JSON.stringify(featureCollection(features))
-  )
+
+  if (writeCommuneFile) {
+    await writeFile(
+      fileUrl,
+      JSON.stringify(featureCollection(features))
+    )
+  }
 }
 
 function getCommuneFileUrl(codeCommune) {
