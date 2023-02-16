@@ -46,16 +46,14 @@ for (const commune of communesActuelles) {
     continue
   }
 
-  const filePath = new URL(`secteur-${codeCommune}.json`, distPath)
-
-  if (await fileExists(filePath)) {
+  if (await fileExists(getCommuneFileUrl(codeCommune))) {
     continue
   }
 
   const communeRows = communesRows[codeCommune]
 
   if (!communeRows) {
-    await writeWholeCommuneFeature(codeCommune, filePath, {
+    await writeWholeCommuneFeature(codeCommune, {
       erreur: 'Données non disponibles sur cette commune'
     })
     continue
@@ -69,12 +67,12 @@ for (const commune of communesActuelles) {
     )
 
     if (carteSecteurFeatures) {
-      await writeFile(
-        filePath,
-        JSON.stringify(featureCollection(carteSecteurFeatures))
+      await writeCommuneFeatures(
+        codeCommune,
+        carteSecteurFeatures
       )
     } else {
-      await writeWholeCommuneFeature(codeCommune, filePath, {
+      await writeWholeCommuneFeature(codeCommune, {
         erreur: 'Impossible de créer la carte scolaire de la commune'
       })
     }
@@ -82,17 +80,30 @@ for (const commune of communesActuelles) {
     const codeRNE = communeRows[0].code_rne
     const college = colleges[codeRNE] || {}
 
-    await writeWholeCommuneFeature(codeCommune, filePath, {
+    await writeWholeCommuneFeature(codeCommune, {
       codeRNE,
       ...college
     })
   }
 }
 
-async function writeWholeCommuneFeature(codeCommune, filePath, properties) {
+async function writeWholeCommuneFeature(codeCommune, properties) {
   const contour = await getContour(codeCommune)
-  await writeFile(
-    filePath,
-    JSON.stringify(featureCollection([feature(contour.geometry, properties)]))
+
+  await writeCommuneFeatures(
+    codeCommune,
+    [feature(contour.geometry, properties)]
   )
+}
+
+async function writeCommuneFeatures(codeCommune, features) {
+  const fileUrl = getCommuneFileUrl(codeCommune)
+  await writeFile(
+    fileUrl,
+    JSON.stringify(featureCollection(features))
+  )
+}
+
+function getCommuneFileUrl(codeCommune) {
+  return new URL(`secteur-${codeCommune}.json`, distPath)
 }
