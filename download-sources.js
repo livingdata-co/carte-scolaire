@@ -8,5 +8,10 @@ await mkdir(sourcesPath, {recursive: true})
 
 const CARTE_SCOLAIRE_DATASET_URL = 'https://data.education.gouv.fr/explore/dataset/fr-en-carte-scolaire-colleges-publics/download?format=json&timezone=Europe/Berlin&use_labels_for_header=false'
 
-const data = await got(CARTE_SCOLAIRE_DATASET_URL).buffer()
-await writeFile(new URL('carte-scolaire.json', sourcesPath), data)
+const carteScolaireData = await got(CARTE_SCOLAIRE_DATASET_URL).buffer()
+await writeFile(new URL('carte-scolaire.json', sourcesPath), carteScolaireData)
+
+const ETABLISSEMENTS_DATASET_URL = 'https://data.education.gouv.fr/explore/dataset/fr-en-adresse-et-geolocalisation-etablissements-premier-et-second-degre/download?format=json&timezone=Europe/Berlin'
+
+const etablissementsData = await got(ETABLISSEMENTS_DATASET_URL).buffer()
+await writeFile(new URL('etablissements.json', sourcesPath), etablissementsData)
