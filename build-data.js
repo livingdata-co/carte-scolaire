@@ -1,8 +1,12 @@
 #!/usr/bin/env
 /* eslint no-await-in-loop: off */
 
+import {createWriteStream} from 'node:fs'
 import {readFile, writeFile, access} from 'node:fs/promises'
+import {finished} from 'node:stream/promises'
 import {groupBy, keyBy} from 'lodash-es'
+import JSONStream from 'JSONStream'
+import pumpify from 'pumpify'
 import {featureCollection, feature} from '@turf/turf'
 import {getCommunes, communeFiltered} from './lib/cog.js'
 import {buildCarteSecteurFeatures} from './lib/carte-secteur.js'
@@ -38,6 +42,16 @@ const carteScolaireRows = await readCarteScolaireRows()
 const colleges = await getIndexedColleges()
 
 const communesRows = groupBy(carteScolaireRows, 'code_insee')
+
+const communesFeaturesWriteStream = createWriteStream(new URL('secteurs.geojson', distPath))
+const communesFeaturesStream = pumpify.obj(
+  JSONStream.stringify(
+    '{"type":"FeatureCollection","features":[',
+    '\n,\n',
+    ']}'
+  ),
+  communesFeaturesWriteStream
+)
 
 for (const commune of communesActuelles) {
   const {code: codeCommune} = commune
@@ -90,6 +104,8 @@ for (const commune of communesActuelles) {
   }
 }
 
+await finished(communesFeaturesWriteStream)
+
 async function writeWholeCommuneFeature(codeCommune, properties) {
   const contour = await getContour(codeCommune)
 
@@ -107,6 +123,10 @@ async function writeCommuneFeatures(codeCommune, features, writeCommuneFile = tr
       fileUrl,
       JSON.stringify(featureCollection(features))
     )
+  }
+
+  for (const feature of features) {
+    communesFeaturesStream.write(feature)
   }
 }
 
