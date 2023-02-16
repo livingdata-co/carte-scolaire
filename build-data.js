@@ -1,27 +1,28 @@
 #!/usr/bin/env
 /* eslint no-await-in-loop: off */
 
-import {mkdir, readFile, writeFile, access} from 'node:fs/promises'
-import {groupBy} from 'lodash-es'
+import {readFile, writeFile, access} from 'node:fs/promises'
+import {groupBy, keyBy} from 'lodash-es'
 import {featureCollection, feature} from '@turf/turf'
-import {getCommunes} from './lib/cog.js'
+import {getCommunes, communeFiltered} from './lib/cog.js'
 import {buildCarteSecteurFeatures} from './lib/carte-secteur.js'
 import {getContour} from './lib/contours.js'
 
 const distPath = new URL('dist/', import.meta.url)
 
-await mkdir(distPath, {recursive: true})
-
 const communes = await getCommunes()
 const communesActuelles = communes.filter(c => ['commune-actuelle', 'arrondissement-municipal'].includes(c.type))
+
+async function getIndexedColleges() {
+  const datasetText = await readFile(new URL('dist/colleges.geojson', import.meta.url), {encoding: 'utf8'})
+  const {features} = JSON.parse(datasetText)
+  const colleges = features.map(({properties}) => properties)
+  return keyBy(colleges, 'codeRNE')
+}
 
 async function readCarteScolaireRows() {
   const datasetText = await readFile(new URL('sources/carte-scolaire.json', import.meta.url), {encoding: 'utf8'})
   return JSON.parse(datasetText).map(r => r.fields)
-}
-
-function communeFiltered(codeCommune) {
-  return codeCommune.slice(0, 2) >= '98' || codeCommune.slice(0, 3) >= '977' || codeCommune.startsWith('975')
 }
 
 async function fileExists(filePath) {
@@ -34,6 +35,7 @@ async function fileExists(filePath) {
 }
 
 const carteScolaireRows = await readCarteScolaireRows()
+const colleges = await getIndexedColleges()
 
 const communesRows = groupBy(carteScolaireRows, 'code_insee')
 
@@ -62,7 +64,8 @@ for (const commune of communesActuelles) {
   if (communeRows.length > 1) {
     const carteSecteurFeatures = await buildCarteSecteurFeatures(
       codeCommune,
-      communeRows
+      communeRows,
+      colleges
     )
 
     if (carteSecteurFeatures) {
@@ -76,8 +79,12 @@ for (const commune of communesActuelles) {
       })
     }
   } else {
+    const codeRNE = communeRows[0].code_rne
+    const college = colleges[codeRNE] || {}
+
     await writeWholeCommuneFeature(codeCommune, filePath, {
-      codeRNE: communeRows[0].code_rne
+      codeRNE,
+      ...college
     })
   }
 }

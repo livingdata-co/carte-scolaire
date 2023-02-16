@@ -8,6 +8,7 @@
   "type": "module",
   "scripts": {
     "download-sources": "node download-sources.js",
+    "build-colleges": "node build-colleges.js",
     "build-data": "node build-data.js",
     "lint": "xo"
   },
