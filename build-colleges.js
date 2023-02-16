@@ -26,14 +26,11 @@ async function readEtablissementRows() {
 
 const etablissements = await readEtablissementRows()
 
-function getColleges() {
-  return etablissements.filter(etablissement => etablissement.etat_etablissement_libe === 'OUVERT' && etablissement.nature_uai_libe === 'COLLEGE' && !communeFiltered(etablissement.code_commune))
-}
-
-const colleges = getColleges()
-
-function buildCollegesFeatures() {
-  return colleges.map(college => {
+const features = etablissements.filter(etablissement =>
+  etablissement.etat_etablissement_libe === 'OUVERT'
+  && etablissement.nature_uai_libe === 'COLLEGE'
+  && !communeFiltered(etablissement.code_commune))
+  .map(college => {
     const geometry = {
       type: 'Point',
       coordinates: [
@@ -56,9 +53,6 @@ function buildCollegesFeatures() {
       properties
     }
   })
-}
-
-const features = buildCollegesFeatures()
 
 await writeFile(
   collegesFilePath,
