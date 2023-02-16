@@ -104,6 +104,8 @@ for (const commune of communesActuelles) {
   }
 }
 
+communesFeaturesStream.end()
+
 await finished(communesFeaturesWriteStream)
 
 async function writeWholeCommuneFeature(codeCommune, properties) {
