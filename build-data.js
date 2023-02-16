@@ -80,7 +80,7 @@ for (const commune of communesActuelles) {
     }
   } else {
     const codeRNE = communeRows[0].code_rne
-    const college = colleges[codeRNE]
+    const college = colleges[codeRNE] || {}
 
     await writeWholeCommuneFeature(codeCommune, filePath, {
       codeRNE,
