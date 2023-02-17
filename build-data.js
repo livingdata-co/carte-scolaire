@@ -93,12 +93,8 @@ for (const commune of communesActuelles) {
       })
     }
   } else {
-    const codeRNE = communeRows[0].code_rne
-    const college = colleges[codeRNE] || {}
-
     await writeWholeCommuneFeature(codeCommune, {
-      codeRNE,
-      ...college
+      codeRNE: communeRows[0].code_rne
     })
   }
 }
@@ -119,8 +115,13 @@ async function writeWholeCommuneFeature(codeCommune, properties) {
 async function writeCommuneFeatures(codeCommune, features, writeCommuneFile = true) {
   const fileUrl = getCommuneFileUrl(codeCommune)
 
-  for (const feature of features) {
-    feature.properties.nomCommune = getCommune(codeCommune).nom
+  for (const f of features) {
+    f.properties.nomCommune = getCommune(codeCommune).nom
+
+    if (f.properties.codeRNE) {
+      const college = colleges[f.properties.codeRNE] || {}
+      f.properties = {...f.properties, ...college}
+    }
   }
 
   if (writeCommuneFile) {
