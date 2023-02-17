@@ -8,7 +8,7 @@ import {groupBy, keyBy} from 'lodash-es'
 import JSONStream from 'JSONStream'
 import pumpify from 'pumpify'
 import {featureCollection, feature} from '@turf/turf'
-import {getCommunes, communeFiltered} from './lib/cog.js'
+import {getCommune, getCommunes, communeFiltered} from './lib/cog.js'
 import {buildCarteSecteurFeatures} from './lib/carte-secteur.js'
 import {getContour} from './lib/contours.js'
 
@@ -53,7 +53,7 @@ const communesFeaturesStream = pumpify.obj(
 )
 
 for (const commune of communesActuelles) {
-  const {code: codeCommune, nom: nomCommune} = commune
+  const {code: codeCommune} = commune
 
   if (communeFiltered(codeCommune)) {
     continue
@@ -78,7 +78,6 @@ for (const commune of communesActuelles) {
   if (communeRows.length > 1) {
     const carteSecteurFeatures = await buildCarteSecteurFeatures(
       codeCommune,
-      nomCommune,
       communeRows,
       colleges
     )
@@ -98,7 +97,6 @@ for (const commune of communesActuelles) {
     const college = colleges[codeRNE] || {}
 
     await writeWholeCommuneFeature(codeCommune, {
-      nomCommune,
       codeRNE,
       ...college
     })
@@ -120,6 +118,10 @@ async function writeWholeCommuneFeature(codeCommune, properties) {
 
 async function writeCommuneFeatures(codeCommune, features, writeCommuneFile = true) {
   const fileUrl = getCommuneFileUrl(codeCommune)
+
+  for (const feature of features) {
+    feature.properties.nomCommune = getCommune(codeCommune).nom
+  }
 
   if (writeCommuneFile) {
     await writeFile(
