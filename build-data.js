@@ -54,7 +54,7 @@ const communesFeaturesStream = pumpify.obj(
 )
 
 for (const commune of communesActuelles) {
-  const {code: codeCommune} = commune
+  const {code: codeCommune, nom: nomCommune} = commune
 
   if (communeFiltered(codeCommune)) {
     continue
@@ -79,6 +79,7 @@ for (const commune of communesActuelles) {
   if (communeRows.length > 1) {
     const carteSecteurFeatures = await buildCarteSecteurFeatures(
       codeCommune,
+      nomCommune,
       communeRows,
       colleges
     )
@@ -98,6 +99,7 @@ for (const commune of communesActuelles) {
     const college = colleges[codeRNE] || {}
 
     await writeWholeCommuneFeature(codeCommune, {
+      nomCommune,
       codeRNE,
       ...college
     })
@@ -113,7 +115,7 @@ async function writeWholeCommuneFeature(codeCommune, properties) {
 
   await writeCommuneFeatures(
     codeCommune,
-    [feature(contour.geometry, properties)]
+    [feature(contour.geometry, {codeCommune, ...properties})]
   )
 }
 

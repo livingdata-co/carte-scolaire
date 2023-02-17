@@ -36,8 +36,8 @@ const features = etablissements.filter(etablissement =>
       codeRNE: college.numero_uai,
       nom: college.appellation_officielle,
       secteur: college.secteur_public_prive_libe,
-      codeCommune: college.code_commune,
-      nomCommune: college.libelle_commune
+      codeCommuneEtablissement: college.code_commune,
+      nomCommuneEtablissement: college.libelle_commune
     }
 
     return {
