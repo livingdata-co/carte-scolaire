@@ -115,6 +115,7 @@ async function writeCommuneFeatures(codeCommune, features, writeCommuneFile = tr
   const fileUrl = getCommuneFileUrl(codeCommune)
 
   for (const f of features) {
+    f.properties.codeCommune = codeCommune
     f.properties.nomCommune = getCommune(codeCommune).nom
 
     if (f.properties.codeRNE) {
