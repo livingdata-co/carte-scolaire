@@ -78,8 +78,7 @@ for (const commune of communesActuelles) {
   if (communeRows.length > 1) {
     const carteSecteurFeatures = await buildCarteSecteurFeatures(
       codeCommune,
-      communeRows,
-      colleges
+      communeRows
     )
 
     if (carteSecteurFeatures) {
