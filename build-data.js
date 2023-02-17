@@ -14,8 +14,7 @@ import {getContour} from './lib/contours.js'
 
 const distPath = new URL('dist/', import.meta.url)
 
-const communes = await getCommunes()
-const communesActuelles = communes.filter(c => ['commune-actuelle', 'arrondissement-municipal'].includes(c.type))
+const communesActuelles = await getCommunes()
 
 async function getIndexedColleges() {
   const datasetText = await readFile(new URL('dist/colleges.geojson', import.meta.url), {encoding: 'utf8'})
