@@ -3,8 +3,9 @@ import {writeFile, mkdir} from 'node:fs/promises'
 import got from 'got'
 
 const sourcesPath = new URL('sources/', import.meta.url)
+const adressesSourcesPath = new URL('sources/adresses/', import.meta.url)
 
-await mkdir(sourcesPath, {recursive: true})
+await mkdir(adressesSourcesPath, {recursive: true})
 
 const CARTE_SCOLAIRE_DATASET_URL = 'https://data.education.gouv.fr/explore/dataset/fr-en-carte-scolaire-colleges-publics/download?format=json&timezone=Europe/Berlin&use_labels_for_header=false'
 

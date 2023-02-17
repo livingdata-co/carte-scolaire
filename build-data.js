@@ -2,7 +2,7 @@
 /* eslint no-await-in-loop: off */
 
 import {createWriteStream} from 'node:fs'
-import {readFile, writeFile, access} from 'node:fs/promises'
+import {readFile, writeFile} from 'node:fs/promises'
 import {finished} from 'node:stream/promises'
 import {groupBy, keyBy} from 'lodash-es'
 import JSONStream from 'JSONStream'
@@ -11,6 +11,7 @@ import {featureCollection, feature} from '@turf/turf'
 import {getCommune, getCommunes, communeFiltered} from './lib/cog.js'
 import {buildCarteSecteurFeatures} from './lib/carte-secteur.js'
 import {getContour} from './lib/contours.js'
+import {fileExists} from './lib/fs.js'
 
 const distPath = new URL('dist/', import.meta.url)
 
@@ -26,15 +27,6 @@ async function getIndexedColleges() {
 async function readCarteScolaireRows() {
   const datasetText = await readFile(new URL('sources/carte-scolaire.json', import.meta.url), {encoding: 'utf8'})
   return JSON.parse(datasetText).map(r => r.fields)
-}
-
-async function fileExists(filePath) {
-  try {
-    await access(filePath)
-    return true
-  } catch {
-    return false
-  }
 }
 
 const carteScolaireRows = await readCarteScolaireRows()
