@@ -143,3 +143,5 @@ dist
 
 /dist
 /sources
+*.db
+*.db-lock
