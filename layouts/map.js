@@ -9,8 +9,32 @@ import MapSidebar from '@/components/map-sidebar.js'
 
 // Mobile layout
 export const Mobile = () => (
-  <div>
-    <MapSidebar />
+  <div className='mobile-layout-container'>
+    <div className='mobile-map-wrapper'>
+      <Map />
+    </div>
+
+    <div className='mobile-sidebar-wrapper'>
+      <MapSidebar />
+    </div>
+
+    <style jsx>{`
+      .mobile-layout-container {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - ${size.header});
+      }
+
+      .mobile-map-wrapper {
+        flex: 6;
+        flex-shrink: 0;
+      }
+
+      .mobile-sidebar-wrapper {
+        flex: 4;
+        flex-shrink: 0;
+      }
+    `}</style>
   </div>
 )
 
