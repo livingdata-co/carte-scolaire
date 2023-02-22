@@ -25,14 +25,8 @@ app.get('/secteur', w(async (req, res) => {
   const coordinates = validateCoordinates([lon, lat])
   const college = search(coordinates)
 
-  const erreur = college?.properties?.erreur
-
   if (!college) {
     throw createError(404, 'Territoire non couvert')
-  }
-
-  if (erreur) {
-    throw createError(400, erreur)
   }
 
   res.send(college)
