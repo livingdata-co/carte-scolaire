@@ -1,3 +1,5 @@
+/* eslint no-undef: off */
+
 import {useEffect, createContext, useState, useMemo} from 'react'
 
 const MOBILE_WIDTH = 992

@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-import colors from '@/styles/colors'
+import colors from '@/styles/colors.js'
 
 const Header = () => (
   <header>
