@@ -7,14 +7,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "node server.js",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_ENV=production node server.js",
     "download-sources": "node download-sources.js",
     "build-colleges": "node build-colleges.js",
     "build-data": "node build-data.js",
     "build-index": "node build-index.js",
-    "start": "node server.js",
     "lint": "xo"
   },
   "dependencies": {
