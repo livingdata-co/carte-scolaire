@@ -2,6 +2,7 @@ import {useState} from 'react'
 import {ChevronLeft, ChevronRight} from 'react-feather'
 
 import colors from '@/styles/colors.js'
+import size from '@/styles/size.js'
 
 import Map from '@/components/map.js'
 import MapSidebar from '@/components/map-sidebar.js'
@@ -43,10 +44,10 @@ export const Desktop = () => {
         }
 
         .layout-sidebar-wrapper {
-          min-width: ${isSidebarOpen ? '460px' : '5px'};
-          max-width: 460px;
+          min-width: ${isSidebarOpen ? size.sidebar : '5px'};
+          max-width: ${size.sidebar};
           box-shadow: 0px 0px 5px grey;
-          height: calc(100vh - 117px);
+          height: calc(100vh - ${size.header});
           z-index: 1;
           overflow: auto;
           overflow-x: hidden;
@@ -55,7 +56,7 @@ export const Desktop = () => {
         .switch-button {
           position: absolute;
           top: 25px;
-          left: ${isSidebarOpen ? '460px' : '5px'};
+          left: ${isSidebarOpen ? size.sidebar : '5px'};
           background-color:${colors.white};
           height: 50px;
           width: 30px;
@@ -69,7 +70,7 @@ export const Desktop = () => {
 
         .layout-map-wrapper {
           width: 100%;
-          height: calc(100vh - 117px);
+          height: calc(100vh - ${size.header});
         }
       `}</style>
     </div>
