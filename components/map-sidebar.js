@@ -1,5 +1,7 @@
+import Search from '@/components/search/index.js'
+
 const MapSidebar = () => (
-  <div>mapsidebar</div>
+  <Search />
 )
 
 export default MapSidebar
