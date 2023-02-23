@@ -18,6 +18,9 @@ const Search = () => {
   const [error, setError] = useState(null)
 
   const handleSelect = async feature => {
+    const {label} = feature.properties
+    setInput(label)
+
     const college = await secteur(feature.geometry.coordinates)
     console.log(college)
   }
