@@ -1,4 +1,5 @@
 import {useState} from 'react'
+import PropTypes from 'prop-types'
 import {ChevronLeft, ChevronRight} from 'react-feather'
 
 import colors from '@/styles/colors.js'
@@ -8,14 +9,14 @@ import Map from '@/components/map.js'
 import MapSidebar from '@/components/map-sidebar.js'
 
 // Mobile layout
-export const Mobile = () => (
+export const Mobile = ({data, setData}) => (
   <div className='mobile-layout-container'>
     <div className='mobile-map-wrapper'>
-      <Map />
+      <Map data={data} />
     </div>
 
     <div className='mobile-sidebar-wrapper'>
-      <MapSidebar />
+      <MapSidebar data={data} setData={setData} />
     </div>
 
     <style jsx>{`
@@ -38,8 +39,17 @@ export const Mobile = () => (
   </div>
 )
 
+Mobile.propTypes = {
+  data: PropTypes.object,
+  setData: PropTypes.func.isRequired
+}
+
+Mobile.defaultProps = {
+  data: null
+}
+
 // Desktop layout
-export const Desktop = () => {
+export const Desktop = ({data, setData}) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   return (
@@ -53,12 +63,12 @@ export const Desktop = () => {
           {isSidebarOpen ? <ChevronLeft /> : <ChevronRight />}
         </button>
         {isSidebarOpen && (
-          <MapSidebar />
+          <MapSidebar data={data} setData={setData} />
         )}
       </div>
 
       <div className='layout-map-wrapper'>
-        <Map />
+        <Map data={data} />
       </div>
 
       <style jsx>{`
@@ -99,5 +109,14 @@ export const Desktop = () => {
       `}</style>
     </div>
   )
+}
+
+Desktop.propTypes = {
+  data: PropTypes.object,
+  setData: PropTypes.func.isRequired
+}
+
+Desktop.defaultProps = {
+  data: null
 }
 

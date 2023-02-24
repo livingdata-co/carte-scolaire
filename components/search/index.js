@@ -1,4 +1,5 @@
 import {useState, useCallback, useEffect} from 'react'
+import PropTypes from 'prop-types'
 import {debounce} from 'lodash-es'
 
 import AutocompleteInput from '@/components/search/autocomplete-input.js'
@@ -10,7 +11,7 @@ import {useInput} from '@/hooks/input.js'
 
 import colors from '@/styles/colors.js'
 
-const Search = () => {
+const Search = ({setData}) => {
   const [input, setInput] = useInput('')
   const [results, setResults] = useState([])
   const [orderResults, setOrderResults] = useState([])
@@ -22,7 +23,7 @@ const Search = () => {
     setInput(label)
 
     const college = await secteur(feature.geometry.coordinates)
-    console.log(college)
+    setData({adresse: feature, college})
   }
 
   const handleSearch = useCallback(debounce(async input => {
@@ -119,6 +120,10 @@ const Search = () => {
       `}</style>
     </>
   )
+}
+
+Search.propTypes = {
+  setData: PropTypes.func.isRequired
 }
 
 export default Search
