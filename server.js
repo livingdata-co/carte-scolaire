@@ -14,7 +14,7 @@ import errorHandler from './lib/util/error-handler.js'
 import {validateCoordinates} from './lib/util/validate.js'
 import {getTile} from './lib/util/mbtiles.js'
 
-import {search} from './lib/search.js'
+import {search, getCollegePosition} from './lib/search.js'
 
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({dev})
@@ -57,6 +57,13 @@ app.prepare().then(() => {
     }
 
     res.send(college)
+  }))
+
+  server.get('/colleges/:codeRNE', w(async (req, res) => {
+    const {codeRNE} = req.params
+    const collegePosition = await getCollegePosition(codeRNE)
+
+    res.send(collegePosition)
   }))
 
   server.get('*', (req, res) => handle(req, res))
