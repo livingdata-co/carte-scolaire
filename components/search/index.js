@@ -18,11 +18,20 @@ const Search = ({setData}) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
+  const getCollege = async coordinates => {
+    try {
+      const college = await secteur(coordinates)
+      return college
+    } catch (error_) {
+      setError(error_)
+    }
+  }
+
   const handleSelect = async feature => {
     const {label} = feature.properties
     setInput(label)
 
-    const college = await secteur(feature.geometry.coordinates)
+    const college = await getCollege(feature.geometry.coordinates)
     setData({adresse: feature, college})
   }
 
