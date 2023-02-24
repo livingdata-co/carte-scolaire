@@ -1,14 +1,21 @@
 import PropTypes from 'prop-types'
 
 import Search from '@/components/search/index.js'
+import College from '@/components/college.js'
 
 const MapSidebar = ({selectedAdresse, selectedCollege, onSelectAdresse, onSelectCollege}) => (
-  <Search
-    selectedAdresse={selectedAdresse}
-    selectedCollege={selectedCollege}
-    onSelectAdresse={onSelectAdresse}
-    onSelectCollege={onSelectCollege}
-  />
+  <>
+    <Search
+      selectedAdresse={selectedAdresse}
+      selectedCollege={selectedCollege}
+      onSelectAdresse={onSelectAdresse}
+      onSelectCollege={onSelectCollege}
+    />
+
+    {selectedCollege?.properties && (
+      <College college={selectedCollege.properties} />
+    )}
+  </>
 )
 
 MapSidebar.propTypes = {
