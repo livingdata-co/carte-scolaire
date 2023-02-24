@@ -5,7 +5,7 @@ import {ChevronLeft, ChevronRight} from 'react-feather'
 import colors from '@/styles/colors.js'
 import size from '@/styles/size.js'
 
-import Map from '@/components/map.js'
+import Map from '@/components/map/index.js'
 import MapSidebar from '@/components/map-sidebar.js'
 
 // Mobile layout
