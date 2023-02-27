@@ -1,4 +1,5 @@
 import {useState} from 'react'
+import PropTypes from 'prop-types'
 import {ChevronLeft, ChevronRight} from 'react-feather'
 
 import colors from '@/styles/colors.js'
@@ -8,14 +9,19 @@ import Map from '@/components/map.js'
 import MapSidebar from '@/components/map-sidebar.js'
 
 // Mobile layout
-export const Mobile = () => (
+export const Mobile = ({selectedAdresse, selectedCollege, onSelectAdresse, onSelectCollege}) => (
   <div className='mobile-layout-container'>
     <div className='mobile-map-wrapper'>
       <Map />
     </div>
 
     <div className='mobile-sidebar-wrapper'>
-      <MapSidebar />
+      <MapSidebar
+        selectedAdresse={selectedAdresse}
+        selectedCollege={selectedCollege}
+        onSelectAdresse={onSelectAdresse}
+        onSelectCollege={onSelectCollege}
+      />
     </div>
 
     <style jsx>{`
@@ -38,8 +44,20 @@ export const Mobile = () => (
   </div>
 )
 
+Mobile.propTypes = {
+  selectedAdresse: PropTypes.object,
+  selectedCollege: PropTypes.object,
+  onSelectAdresse: PropTypes.func.isRequired,
+  onSelectCollege: PropTypes.func.isRequired
+}
+
+Mobile.defaultProps = {
+  selectedAdresse: null,
+  selectedCollege: null
+}
+
 // Desktop layout
-export const Desktop = () => {
+export const Desktop = ({selectedAdresse, selectedCollege, onSelectAdresse, onSelectCollege}) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   return (
@@ -53,7 +71,12 @@ export const Desktop = () => {
           {isSidebarOpen ? <ChevronLeft /> : <ChevronRight />}
         </button>
         {isSidebarOpen && (
-          <MapSidebar />
+          <MapSidebar
+            selectedAdresse={selectedAdresse}
+            selectedCollege={selectedCollege}
+            onSelectAdresse={onSelectAdresse}
+            onSelectCollege={onSelectCollege}
+          />
         )}
       </div>
 
@@ -99,5 +122,17 @@ export const Desktop = () => {
       `}</style>
     </div>
   )
+}
+
+Desktop.propTypes = {
+  selectedAdresse: PropTypes.object,
+  selectedCollege: PropTypes.object,
+  onSelectAdresse: PropTypes.func.isRequired,
+  onSelectCollege: PropTypes.func.isRequired
+}
+
+Desktop.defaultProps = {
+  selectedAdresse: null,
+  selectedCollege: null
 }
 

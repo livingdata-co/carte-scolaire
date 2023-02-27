@@ -29,7 +29,7 @@ const AutocompleteInput = ({
   const renderInput = props => (
     <>
       {label && (
-        <div style={{marginTop: '1em', textAlign: 'center'}}>{label}</div>
+        <div className='search-label' style={{marginTop: '1em', textAlign: 'center', color: colors.darkGrey, fontWeight: 'bold'}}>{label}</div>
       )}
       <div className='search-input-container' role='search'>
 
@@ -50,11 +50,11 @@ const AutocompleteInput = ({
           }
 
           .search {
-            background-color: ${colors.white};
+            background-color: ${colors.darkGrey};
             border: 1px solid ${colors.black};
-            border-radius: 2px 2px 2px 2px;
+            border-radius: 5px;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
-            color: rgba(0, 0, 0, 0.75);
+            color: ${colors.white};
             display: block;
             font-family: inherit;
             font-size: 14px;
@@ -64,17 +64,31 @@ const AutocompleteInput = ({
             width: 100%;
           }
 
+          ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+            color: ${colors.grey};
+            opacity: 1; /* Firefox */
+          }
+
+          ::-ms-input-placeholder { /* Microsoft Edge */
+            color: ${colors.grey};
+          }
+
           .icon {
             display: inline-flex;
+            padding: 1em;
+            background-color: ${colors.darkGreen};
+            color: ${colors.white};
             vertical-align: top;
             position: absolute;
-            right: 2em;
+            right: 1em;
+            border-radius: 0 3px 3px 0;
             top: 50%;
             transform: translateY(-50%);
           }
 
           input {
             text-indent: 1em;
+            color: ${colors.white};
           }
         `}</style>
       </div>

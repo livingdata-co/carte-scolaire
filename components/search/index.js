@@ -1,4 +1,5 @@
 import {useState, useCallback, useEffect} from 'react'
+import PropTypes from 'prop-types'
 import {debounce} from 'lodash-es'
 
 import AutocompleteInput from '@/components/search/autocomplete-input.js'
@@ -10,19 +11,30 @@ import {useInput} from '@/hooks/input.js'
 
 import colors from '@/styles/colors.js'
 
-const Search = () => {
+const Search = ({onSelectAdresse, onSelectCollege}) => {
   const [input, setInput] = useInput('')
   const [results, setResults] = useState([])
   const [orderResults, setOrderResults] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
+  const getCollege = async coordinates => {
+    try {
+      const college = await secteur(coordinates)
+      return college
+    } catch (error_) {
+      setError(error_)
+    }
+  }
+
   const handleSelect = async feature => {
     const {label} = feature.properties
     setInput(label)
 
-    const college = await secteur(feature.geometry.coordinates)
-    console.log(college)
+    const college = await getCollege(feature.geometry.coordinates)
+
+    onSelectAdresse(feature)
+    onSelectCollege(college)
   }
 
   const handleSearch = useCallback(debounce(async input => {
@@ -119,6 +131,11 @@ const Search = () => {
       `}</style>
     </>
   )
+}
+
+Search.propTypes = {
+  onSelectAdresse: PropTypes.func.isRequired,
+  onSelectCollege: PropTypes.func.isRequired
 }
 
 export default Search

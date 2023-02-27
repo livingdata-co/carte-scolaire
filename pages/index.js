@@ -1,4 +1,4 @@
-import {useContext, useMemo} from 'react'
+import {useContext, useMemo, useState} from 'react'
 
 import DeviceContext from '@/contexts/device.js'
 
@@ -7,12 +7,27 @@ import {Desktop, Mobile} from '@/layouts/map.js'
 
 const Homepage = () => {
   const {isMobileDevice} = useContext(DeviceContext)
+  const [selectedAdresse, setSelectedAdresse] = useState(null)
+  const [selectedCollege, setSelectedCollege] = useState(null)
+
+  const handleSelectAdresse = adresse => {
+    setSelectedAdresse(adresse)
+  }
+
+  const handleSelectCollege = college => {
+    setSelectedCollege(college)
+  }
 
   const Layout = useMemo(() => isMobileDevice ? Mobile : Desktop, [isMobileDevice])
 
   return (
     <Page>
-      <Layout />
+      <Layout
+        selectedAdresse={selectedAdresse}
+        selectedCollege={selectedCollege}
+        onSelectAdresse={handleSelectAdresse}
+        onSelectCollege={handleSelectCollege}
+      />
     </Page>
   )
 }
