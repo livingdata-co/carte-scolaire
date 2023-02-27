@@ -145,3 +145,4 @@ dist
 /sources
 *.db
 *.db-lock
+*.mbtiles
