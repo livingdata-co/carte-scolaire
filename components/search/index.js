@@ -33,8 +33,8 @@ const Search = ({onSelectAdresse, onSelectCollege}) => {
 
     const college = await getCollege(feature.geometry.coordinates)
 
-    onSelectAdresse({adresse: feature})
-    onSelectCollege({college})
+    onSelectAdresse(feature)
+    onSelectCollege(college)
   }
 
   const handleSearch = useCallback(debounce(async input => {
