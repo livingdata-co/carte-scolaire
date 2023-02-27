@@ -15,6 +15,7 @@
     "build-colleges": "node build-colleges.js",
     "build-data": "node build-data.js",
     "build-index": "node build-index.js",
+    "build-tiles": "tippecanoe -Z8 -z12 -o carte-scolaire.mbtiles dist/secteurs.geojson dist/colleges.geojson",
     "lint": "xo"
   },
   "dependencies": {
