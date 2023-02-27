@@ -18,7 +18,8 @@ const College = ({college}) => (
         margin-top: 1em;
         padding: 20px;
         background-color: ${colors.green};
-        color: white;
+        color: ${colors.white};
+        box-shadow: inset 0 10px 9px -10px ${colors.black};
       }
 
       .college-nom {
