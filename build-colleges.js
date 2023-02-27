@@ -22,7 +22,8 @@ const etablissements = await readEtablissementRows()
 const features = etablissements.filter(etablissement =>
   etablissement.etat_etablissement_libe === 'OUVERT'
   && etablissement.nature_uai_libe === 'COLLEGE'
-  && !communeFiltered(etablissement.code_commune))
+  && !communeFiltered(etablissement.code_commune)
+  && etablissement.longitude && etablissement.latitude)
   .map(college => {
     const geometry = {
       type: 'Point',
