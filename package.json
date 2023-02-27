@@ -8,7 +8,7 @@
   "type": "module",
   "scripts": {
     "dev": "node server.js",
-    "scalingo-postbuild": "wget -q https://carte-scolaire-data.s3.fr-par.scw.cloud/secteurs.db && yarn build",
+    "scalingo-postbuild": "wget -q https://carte-scolaire-data.s3.fr-par.scw.cloud/secteurs.db && wget -q https://carte-scolaire-data.s3.fr-par.scw.cloud/carte-scolaire.mbtiles && yarn build",
     "build": "next build",
     "start": "NODE_ENV=production node server.js",
     "download-sources": "node download-sources.js",
