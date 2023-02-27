@@ -11,7 +11,7 @@ import {useInput} from '@/hooks/input.js'
 
 import colors from '@/styles/colors.js'
 
-const Search = ({setData}) => {
+const Search = ({onSelectAdresse, onSelectCollege}) => {
   const [input, setInput] = useInput('')
   const [results, setResults] = useState([])
   const [orderResults, setOrderResults] = useState([])
@@ -32,7 +32,9 @@ const Search = ({setData}) => {
     setInput(label)
 
     const college = await getCollege(feature.geometry.coordinates)
-    setData({adresse: feature, college})
+
+    onSelectAdresse({adresse: feature})
+    onSelectCollege({college})
   }
 
   const handleSearch = useCallback(debounce(async input => {
@@ -132,7 +134,8 @@ const Search = ({setData}) => {
 }
 
 Search.propTypes = {
-  setData: PropTypes.func.isRequired
+  onSelectAdresse: PropTypes.func.isRequired,
+  onSelectCollege: PropTypes.func.isRequired
 }
 
 export default Search

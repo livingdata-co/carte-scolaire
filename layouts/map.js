@@ -9,14 +9,19 @@ import Map from '@/components/map.js'
 import MapSidebar from '@/components/map-sidebar.js'
 
 // Mobile layout
-export const Mobile = ({data, setData}) => (
+export const Mobile = ({selectedAdresse, selectedCollege, onSelectAdresse, onSelectCollege}) => (
   <div className='mobile-layout-container'>
     <div className='mobile-map-wrapper'>
-      <Map data={data} />
+      <Map />
     </div>
 
     <div className='mobile-sidebar-wrapper'>
-      <MapSidebar data={data} setData={setData} />
+      <MapSidebar
+        selectedAdresse={selectedAdresse}
+        selectedCollege={selectedCollege}
+        onSelectAdresse={onSelectAdresse}
+        onSelectCollege={onSelectCollege}
+      />
     </div>
 
     <style jsx>{`
@@ -40,16 +45,19 @@ export const Mobile = ({data, setData}) => (
 )
 
 Mobile.propTypes = {
-  data: PropTypes.object,
-  setData: PropTypes.func.isRequired
+  selectedAdresse: PropTypes.object,
+  selectedCollege: PropTypes.object,
+  onSelectAdresse: PropTypes.func.isRequired,
+  onSelectCollege: PropTypes.func.isRequired
 }
 
 Mobile.defaultProps = {
-  data: null
+  selectedAdresse: null,
+  selectedCollege: null
 }
 
 // Desktop layout
-export const Desktop = ({data, setData}) => {
+export const Desktop = ({selectedAdresse, selectedCollege, onSelectAdresse, onSelectCollege}) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   return (
@@ -63,12 +71,17 @@ export const Desktop = ({data, setData}) => {
           {isSidebarOpen ? <ChevronLeft /> : <ChevronRight />}
         </button>
         {isSidebarOpen && (
-          <MapSidebar data={data} setData={setData} />
+          <MapSidebar
+            selectedAdresse={selectedAdresse}
+            selectedCollege={selectedCollege}
+            onSelectAdresse={onSelectAdresse}
+            onSelectCollege={onSelectCollege}
+          />
         )}
       </div>
 
       <div className='layout-map-wrapper'>
-        <Map data={data} />
+        <Map />
       </div>
 
       <style jsx>{`
@@ -112,11 +125,14 @@ export const Desktop = ({data, setData}) => {
 }
 
 Desktop.propTypes = {
-  data: PropTypes.object,
-  setData: PropTypes.func.isRequired
+  selectedAdresse: PropTypes.object,
+  selectedCollege: PropTypes.object,
+  onSelectAdresse: PropTypes.func.isRequired,
+  onSelectCollege: PropTypes.func.isRequired
 }
 
 Desktop.defaultProps = {
-  data: null
+  selectedAdresse: null,
+  selectedCollege: null
 }
 

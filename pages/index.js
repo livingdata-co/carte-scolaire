@@ -7,13 +7,27 @@ import {Desktop, Mobile} from '@/layouts/map.js'
 
 const Homepage = () => {
   const {isMobileDevice} = useContext(DeviceContext)
-  const [data, setData] = useState(null)
+  const [selectedAdresse, setSelectedAdresse] = useState(null)
+  const [selectedCollege, setSelectedCollege] = useState(null)
+
+  const handleSelectAdresse = adresse => {
+    setSelectedAdresse(adresse)
+  }
+
+  const handleSelectCollege = college => {
+    setSelectedCollege(college)
+  }
 
   const Layout = useMemo(() => isMobileDevice ? Mobile : Desktop, [isMobileDevice])
 
   return (
     <Page>
-      <Layout data={data} setData={setData} />
+      <Layout
+        selectedAdresse={selectedAdresse}
+        selectedCollege={selectedCollege}
+        onSelectAdresse={handleSelectAdresse}
+        onSelectCollege={handleSelectCollege}
+      />
     </Page>
   )
 }
