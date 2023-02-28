@@ -14,6 +14,7 @@ const Map = ({selectedAdresse, selectedCollege}) => {
   const [collegeLocation, setCollegeLocation] = useState(null)
   const [adresseMarker, setAdresseMarker] = useState(null)
   const [collegeMarker, setCollegeMarker] = useState(null)
+  const [collegePopup, setCollegePopup] = useState(null)
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -68,9 +69,10 @@ const Map = ({selectedAdresse, selectedCollege}) => {
     if (selectedAdresse && collegeLocation && map) {
       const adressePosition = selectedAdresse.geometry.coordinates
 
-      if (adresseMarker || collegeMarker) {
+      if (adresseMarker || collegeMarker || collegePopup) {
         adresseMarker.remove()
         collegeMarker.remove()
+        collegePopup.remove()
       }
 
       const adresseMarkerElement = document.createElement('div') // eslint-disable-line no-undef
@@ -78,6 +80,11 @@ const Map = ({selectedAdresse, selectedCollege}) => {
 
       const currentAdresseMarker = new maplibregl.Marker(adresseMarkerElement)
         .setLngLat(adressePosition)
+        .addTo(map)
+
+      const currentCollegePopup = new maplibregl.Popup({offset: 25, closeOnClick: false, closeButton: false})
+        .setLngLat(collegeLocation.coordinates)
+        .setText(collegeLocation.adresseEtablissement)
         .addTo(map)
 
       const currentCollegeMarker = new maplibregl.Marker(collegeMarkerElement)
@@ -91,6 +98,7 @@ const Map = ({selectedAdresse, selectedCollege}) => {
 
       setAdresseMarker(currentAdresseMarker)
       setCollegeMarker(currentCollegeMarker)
+      setCollegePopup(currentCollegePopup)
     }
   }, [selectedAdresse, collegeLocation, map]) // eslint-disable-line react-hooks/exhaustive-deps
 
