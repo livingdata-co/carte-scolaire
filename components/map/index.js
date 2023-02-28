@@ -10,11 +10,11 @@ import {getCollegeLocation} from '@/lib/api.js'
 
 const Map = ({selectedAdresse, selectedCollege}) => {
   const mapContainer = useRef(null)
+  const adresseMarker = useRef(null)
+  const collegeMarker = useRef(null)
+  const collegePopup = useRef(null)
   const [map, setMap] = useState(null)
   const [collegeLocation, setCollegeLocation] = useState(null)
-  const [adresseMarker, setAdresseMarker] = useState(null)
-  const [collegeMarker, setCollegeMarker] = useState(null)
-  const [collegePopup, setCollegePopup] = useState(null)
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -69,10 +69,10 @@ const Map = ({selectedAdresse, selectedCollege}) => {
     if (selectedAdresse && collegeLocation && map) {
       const adressePosition = selectedAdresse.geometry.coordinates
 
-      if (adresseMarker || collegeMarker || collegePopup) {
-        adresseMarker.remove()
-        collegeMarker.remove()
-        collegePopup.remove()
+      if (adresseMarker.current || collegeMarker.current || collegePopup.current) {
+        adresseMarker.current.remove()
+        collegeMarker.current.remove()
+        collegePopup.current.remove()
       }
 
       const adresseMarkerElement = document.createElement('div') // eslint-disable-line no-undef
@@ -96,11 +96,11 @@ const Map = ({selectedAdresse, selectedCollege}) => {
 
       map.fitBounds([adressePosition, collegeLocation.coordinates], {padding: 50})
 
-      setAdresseMarker(currentAdresseMarker)
-      setCollegeMarker(currentCollegeMarker)
-      setCollegePopup(currentCollegePopup)
+      adresseMarker.current = currentAdresseMarker
+      collegeMarker.current = currentCollegeMarker
+      collegePopup.current = currentCollegePopup
     }
-  }, [selectedAdresse, collegeLocation, map]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedAdresse, collegeLocation, map])
 
   return (
     <>
