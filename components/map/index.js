@@ -61,6 +61,8 @@ const Map = ({selectedAdresse, selectedCollege}) => {
 
       if (!erreur && codeRNE) {
         getCoordinates(codeRNE)
+      } else {
+        setCollegeLocation(null)
       }
     }
   }, [selectedCollege])
