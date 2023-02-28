@@ -6,12 +6,12 @@ import {sources} from '@/components/map/sources.js'
 import {layers} from '@/components/map/layers.js'
 import MapError from '@/components/map/map-error.js'
 
-import {getCollegePosition} from '@/lib/api.js'
+import {getCollegeLocation} from '@/lib/api.js'
 
 const Map = ({selectedAdresse, selectedCollege}) => {
   const mapContainer = useRef(null)
   const [map, setMap] = useState(null)
-  const [collegePosition, setCollegePosition] = useState(null)
+  const [collegeLocation, setCollegeLocation] = useState(null)
   const [adresseMarker, setAdresseMarker] = useState(null)
   const [collegeMarker, setCollegeMarker] = useState(null)
   const [error, setError] = useState(null)
@@ -45,8 +45,8 @@ const Map = ({selectedAdresse, selectedCollege}) => {
 
   async function getCoordinates(codeRNE) {
     try {
-      const collegePosition = await getCollegePosition(codeRNE)
-      setCollegePosition(collegePosition)
+      const collegeLocation = await getCollegeLocation(codeRNE)
+      setCollegeLocation(collegeLocation)
     } catch (error_) {
       setError(error_)
     }
@@ -65,7 +65,7 @@ const Map = ({selectedAdresse, selectedCollege}) => {
   }, [selectedCollege])
 
   useEffect(() => {
-    if (selectedAdresse && collegePosition && map) {
+    if (selectedAdresse && collegeLocation && map) {
       const adressePosition = selectedAdresse.geometry.coordinates
 
       if (adresseMarker || collegeMarker) {
@@ -81,18 +81,18 @@ const Map = ({selectedAdresse, selectedCollege}) => {
         .addTo(map)
 
       const currentCollegeMarker = new maplibregl.Marker(collegeMarkerElement)
-        .setLngLat(collegePosition)
+        .setLngLat(collegeLocation.coordinates)
         .addTo(map)
 
       currentAdresseMarker.getElement().innerHTML = '<img src="/images/map/home.svg">'
       currentCollegeMarker.getElement().innerHTML = '<img src="/images/map/pen.svg">'
 
-      map.fitBounds([adressePosition, collegePosition], {padding: 50})
+      map.fitBounds([adressePosition, collegeLocation.coordinates], {padding: 50})
 
       setAdresseMarker(currentAdresseMarker)
       setCollegeMarker(currentCollegeMarker)
     }
-  }, [selectedAdresse, collegePosition, map]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedAdresse, collegeLocation, map]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
