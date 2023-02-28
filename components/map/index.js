@@ -6,16 +6,16 @@ import {sources} from '@/components/map/sources.js'
 import {layers} from '@/components/map/layers.js'
 import MapError from '@/components/map/map-error.js'
 
-import {getCollegeLocation} from '@/lib/api.js'
+import {getCollege} from '@/lib/api.js'
 
 const Map = ({selectedAdresse, selectedCollege}) => {
   const mapContainer = useRef(null)
   const adresseMarker = useRef(null)
   const collegeMarker = useRef(null)
   const collegePopup = useRef(null)
-  const prevCollegeLocationRef = useRef(null)
+  const prevCollegeFeatureRef = useRef(null)
   const [map, setMap] = useState(null)
-  const [collegeLocation, setCollegeLocation] = useState(null)
+  const [collegeFeature, setCollegeFeature] = useState(null)
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -47,8 +47,8 @@ const Map = ({selectedAdresse, selectedCollege}) => {
 
   async function getCoordinates(codeRNE) {
     try {
-      const collegeLocation = await getCollegeLocation(codeRNE)
-      setCollegeLocation(collegeLocation)
+      const collegeFeature = await getCollege(codeRNE)
+      setCollegeFeature(collegeFeature)
     } catch (error_) {
       setError(error_)
     }
@@ -63,13 +63,13 @@ const Map = ({selectedAdresse, selectedCollege}) => {
       if (!erreur && codeRNE) {
         getCoordinates(codeRNE)
       } else {
-        setCollegeLocation(null)
+        setCollegeFeature(null)
       }
     }
   }, [selectedCollege])
 
   useEffect(() => {
-    if (selectedAdresse && collegeLocation && map) {
+    if (selectedAdresse && collegeFeature && map) {
       const adressePosition = selectedAdresse.geometry.coordinates
 
       const adresseMarkerElement = document.createElement('div') // eslint-disable-line no-undef
@@ -80,12 +80,12 @@ const Map = ({selectedAdresse, selectedCollege}) => {
         .addTo(map)
 
       const currentCollegePopup = new maplibregl.Popup({offset: 25, closeOnClick: false, closeButton: false})
-        .setLngLat(collegeLocation.coordinates)
-        .setText(collegeLocation.adresseEtablissement)
+        .setLngLat(collegeFeature.geometry.coordinates)
+        .setText(collegeFeature.properties.adresseEtablissement)
         .addTo(map)
 
       const currentCollegeMarker = new maplibregl.Marker(collegeMarkerElement)
-        .setLngLat(collegeLocation.coordinates)
+        .setLngLat(collegeFeature.geometry.coordinates)
         .addTo(map)
 
       currentAdresseMarker.getElement().innerHTML = '<img src="/images/map/home.svg">'
@@ -95,10 +95,10 @@ const Map = ({selectedAdresse, selectedCollege}) => {
       collegeMarker.current = currentCollegeMarker
       collegePopup.current = currentCollegePopup
 
-      if (prevCollegeLocationRef.current !== collegeLocation) {
+      if (prevCollegeFeatureRef.current !== collegeFeature) {
         map.fitBounds([
           adressePosition,
-          collegeLocation.coordinates
+          collegeFeature.geometry.coordinates
         ], {padding: 50})
       }
     }
@@ -116,11 +116,11 @@ const Map = ({selectedAdresse, selectedCollege}) => {
         collegePopup.current.remove()
       }
     }
-  }, [selectedAdresse, collegeLocation, map])
+  }, [selectedAdresse, collegeFeature, map])
 
   useEffect(() => {
-    prevCollegeLocationRef.current = collegeLocation
-  }, [collegeLocation])
+    prevCollegeFeatureRef.current = collegeFeature
+  }, [collegeFeature])
 
   return (
     <>

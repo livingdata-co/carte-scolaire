@@ -14,7 +14,7 @@ import errorHandler from './lib/util/error-handler.js'
 import {validateCoordinates} from './lib/util/validate.js'
 import {getTile} from './lib/util/mbtiles.js'
 
-import {search, getCollegeLocation} from './lib/search.js'
+import {search, getCollege} from './lib/search.js'
 
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({dev})
@@ -61,9 +61,13 @@ app.prepare().then(() => {
 
   server.get('/colleges/:codeRNE', w(async (req, res) => {
     const {codeRNE} = req.params
-    const collegeLocation = getCollegeLocation(codeRNE)
+    const college = getCollege(codeRNE)
 
-    res.send(collegeLocation)
+    if (!college) {
+      throw createError(404, 'Collège introuvable')
+    }
+
+    res.send(college)
   }))
 
   server.get('*', (req, res) => handle(req, res))
