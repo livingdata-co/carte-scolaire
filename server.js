@@ -61,7 +61,7 @@ app.prepare().then(() => {
 
   server.get('/colleges/:codeRNE', w(async (req, res) => {
     const {codeRNE} = req.params
-    const collegePosition = await getCollegePosition(codeRNE)
+    const collegePosition = getCollegePosition(codeRNE)
 
     res.send(collegePosition)
   }))
