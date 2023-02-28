@@ -13,6 +13,7 @@ const Map = ({selectedAdresse, selectedCollege}) => {
   const adresseMarker = useRef(null)
   const collegeMarker = useRef(null)
   const collegePopup = useRef(null)
+  const prevCollegeLocationRef = useRef(null)
   const [map, setMap] = useState(null)
   const [collegeLocation, setCollegeLocation] = useState(null)
   const [error, setError] = useState(null)
@@ -71,12 +72,6 @@ const Map = ({selectedAdresse, selectedCollege}) => {
     if (selectedAdresse && collegeLocation && map) {
       const adressePosition = selectedAdresse.geometry.coordinates
 
-      if (adresseMarker.current || collegeMarker.current || collegePopup.current) {
-        adresseMarker.current.remove()
-        collegeMarker.current.remove()
-        collegePopup.current.remove()
-      }
-
       const adresseMarkerElement = document.createElement('div') // eslint-disable-line no-undef
       const collegeMarkerElement = document.createElement('div') // eslint-disable-line no-undef
 
@@ -96,13 +91,36 @@ const Map = ({selectedAdresse, selectedCollege}) => {
       currentAdresseMarker.getElement().innerHTML = '<img src="/images/map/home.svg">'
       currentCollegeMarker.getElement().innerHTML = '<img src="/images/map/pen.svg">'
 
-      map.fitBounds([adressePosition, collegeLocation.coordinates], {padding: 50})
-
       adresseMarker.current = currentAdresseMarker
       collegeMarker.current = currentCollegeMarker
       collegePopup.current = currentCollegePopup
+
+      if (prevCollegeLocationRef.current !== collegeLocation) {
+        map.fitBounds([
+          adressePosition,
+          collegeLocation.coordinates
+        ], {padding: 50})
+      }
+    }
+
+    return () => {
+      if (adresseMarker.current) {
+        adresseMarker.current.remove()
+      }
+
+      if (collegeMarker.current) {
+        collegeMarker.current.remove()
+      }
+
+      if (collegePopup.current) {
+        collegePopup.current.remove()
+      }
     }
   }, [selectedAdresse, collegeLocation, map])
+
+  useEffect(() => {
+    prevCollegeLocationRef.current = collegeLocation
+  }, [collegeLocation])
 
   return (
     <>
