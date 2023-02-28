@@ -12,7 +12,10 @@ import MapSidebar from '@/components/map-sidebar.js'
 export const Mobile = ({selectedAdresse, selectedCollege, onSelectAdresse, onSelectCollege}) => (
   <div className='mobile-layout-container'>
     <div className='mobile-map-wrapper'>
-      <Map />
+      <Map
+        selectedAdresse={selectedAdresse}
+        selectedCollege={selectedCollege}
+      />
     </div>
 
     <div className='mobile-sidebar-wrapper'>
@@ -81,7 +84,10 @@ export const Desktop = ({selectedAdresse, selectedCollege, onSelectAdresse, onSe
       </div>
 
       <div className='layout-map-wrapper'>
-        <Map />
+        <Map
+          selectedAdresse={selectedAdresse}
+          selectedCollege={selectedCollege}
+        />
       </div>
 
       <style jsx>{`

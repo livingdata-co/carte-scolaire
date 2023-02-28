@@ -1,12 +1,20 @@
 import {useEffect, useRef, useState} from 'react'
+import PropTypes from 'prop-types'
 import maplibregl from 'maplibre-gl'
 
 import {sources} from '@/components/map/sources.js'
 import {layers} from '@/components/map/layers.js'
+import MapError from '@/components/map/map-error.js'
 
-const Map = () => {
+import {getCollegePosition} from '@/lib/api.js'
+
+const Map = ({selectedAdresse, selectedCollege}) => {
   const mapContainer = useRef(null)
   const [map, setMap] = useState(null)
+  const [collegePosition, setCollegePosition] = useState(null)
+  const [adresseMarker, setAdresseMarker] = useState(null)
+  const [collegeMarker, setCollegeMarker] = useState(null)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     const maplibre = new maplibregl.Map({
@@ -35,15 +43,75 @@ const Map = () => {
     }
   }, [])
 
-  useEffect(() => {
-    if (map) {
-      console.log('Map is loaded')
+  async function getCoordinates(codeRNE) {
+    try {
+      const collegePosition = await getCollegePosition(codeRNE)
+      setCollegePosition(collegePosition)
+    } catch (error_) {
+      setError(error_)
     }
-  },[map])
+  }
+
+  useEffect(() => {
+    if (selectedCollege) {
+      setError(null)
+
+      const {error, codeRNE} = selectedCollege.properties
+
+      if (!error && codeRNE) {
+        getCoordinates(codeRNE)
+      }
+    }
+  }, [selectedCollege])
+
+  useEffect(() => {
+    if (selectedAdresse && collegePosition && map) {
+      const adressePosition = selectedAdresse.geometry.coordinates
+
+      if (adresseMarker || collegeMarker) {
+        adresseMarker.remove()
+        collegeMarker.remove()
+      }
+
+      const adresseMarkerElement = document.createElement('div') // eslint-disable-line no-undef
+      const collegeMarkerElement = document.createElement('div') // eslint-disable-line no-undef
+
+      const currentAdresseMarker = new maplibregl.Marker(adresseMarkerElement)
+        .setLngLat(adressePosition)
+        .addTo(map)
+
+      const currentCollegeMarker = new maplibregl.Marker(collegeMarkerElement)
+        .setLngLat(collegePosition)
+        .addTo(map)
+
+      currentAdresseMarker.getElement().innerHTML = '<img src="/images/map/home.svg">'
+      currentCollegeMarker.getElement().innerHTML = '<img src="/images/map/pen.svg">'
+
+      map.fitBounds([adressePosition, collegePosition], {padding: 50})
+
+      setAdresseMarker(currentAdresseMarker)
+      setCollegeMarker(currentCollegeMarker)
+    }
+  }, [selectedAdresse, collegePosition, map]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div ref={mapContainer} style={{width: '100%', height: '100%'}} />
+    <>
+      {error && (
+        <MapError message={error.message} />
+      )}
+      <div ref={mapContainer} style={{width: '100%', height: '100%'}} />
+    </>
   )
+}
+
+Map.propTypes = {
+  selectedAdresse: PropTypes.object,
+  selectedCollege: PropTypes.object
+}
+
+Map.defaultProps = {
+  selectedAdresse: null,
+  selectedCollege: null
 }
 
 export default Map
