@@ -11,6 +11,7 @@ import {getCollege} from '@/lib/api.js'
 const Map = ({selectedAdresse, selectedCollege}) => {
   const mapContainer = useRef(null)
   const adresseMarker = useRef(null)
+  const adressePopup = useRef(null)
   const collegeMarker = useRef(null)
   const collegePopup = useRef(null)
   const prevCollegeFeatureRef = useRef(null)
@@ -75,13 +76,18 @@ const Map = ({selectedAdresse, selectedCollege}) => {
       const adresseMarkerElement = document.createElement('div') // eslint-disable-line no-undef
       const collegeMarkerElement = document.createElement('div') // eslint-disable-line no-undef
 
+      const currentAdressePopup = new maplibregl.Popup({offset: 25, closeOnClick: false, closeButton: false})
+        .setLngLat(adressePosition)
+        .setText(selectedAdresse.properties.label)
+        .addTo(map)
+
       const currentAdresseMarker = new maplibregl.Marker(adresseMarkerElement)
         .setLngLat(adressePosition)
         .addTo(map)
 
       const currentCollegePopup = new maplibregl.Popup({offset: 25, closeOnClick: false, closeButton: false})
         .setLngLat(collegeFeature.geometry.coordinates)
-        .setText(collegeFeature.properties.adresseEtablissement)
+        .setText(collegeFeature.properties.nom)
         .addTo(map)
 
       const currentCollegeMarker = new maplibregl.Marker(collegeMarkerElement)
@@ -92,6 +98,7 @@ const Map = ({selectedAdresse, selectedCollege}) => {
       currentCollegeMarker.getElement().innerHTML = '<img src="/images/map/pen.svg">'
 
       adresseMarker.current = currentAdresseMarker
+      adressePopup.current = currentAdressePopup
       collegeMarker.current = currentCollegeMarker
       collegePopup.current = currentCollegePopup
 
@@ -99,13 +106,17 @@ const Map = ({selectedAdresse, selectedCollege}) => {
         map.fitBounds([
           adressePosition,
           collegeFeature.geometry.coordinates
-        ], {padding: 50})
+        ], {padding: 200})
       }
     }
 
     return () => {
       if (adresseMarker.current) {
         adresseMarker.current.remove()
+      }
+
+      if (adressePopup.current) {
+        adressePopup.current.remove()
       }
 
       if (collegeMarker.current) {
