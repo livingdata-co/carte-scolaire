@@ -50,8 +50,8 @@ const Map = ({selectedAdresse, selectedCollege}) => {
     try {
       const collegeFeature = await getCollege(codeRNE)
       setCollegeFeature(collegeFeature)
-    } catch (error_) {
-      setError(error_)
+    } catch (error) {
+      setError(error)
     }
   }
 

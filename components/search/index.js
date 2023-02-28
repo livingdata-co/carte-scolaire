@@ -22,8 +22,8 @@ const Search = ({onSelectAdresse, onSelectCollege}) => {
     try {
       const college = await secteur(coordinates)
       return college
-    } catch (error_) {
-      setError(error_)
+    } catch (error) {
+      setError(error)
     }
   }
 
@@ -44,8 +44,8 @@ const Search = ({onSelectAdresse, onSelectCollege}) => {
         results.features
           .filter(({properties}) => !['75056', '13055', '69123'].includes(properties.id)) // Filter Paris, Marseille and Lyon
       )
-    } catch (error_) {
-      setError(error_)
+    } catch (error) {
+      setError(error)
     }
 
     setLoading(false)
