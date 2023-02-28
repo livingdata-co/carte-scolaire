@@ -57,9 +57,9 @@ const Map = ({selectedAdresse, selectedCollege}) => {
     if (selectedCollege) {
       setError(null)
 
-      const {error, codeRNE} = selectedCollege.properties
+      const {erreur, codeRNE} = selectedCollege.properties
 
-      if (!error && codeRNE) {
+      if (!erreur && codeRNE) {
         getCoordinates(codeRNE)
       }
     }
