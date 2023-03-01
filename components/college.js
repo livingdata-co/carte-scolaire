@@ -4,7 +4,7 @@ import colors from '@/styles/colors.js'
 import {getCodeDepartement} from '@/lib/util/adresse.js'
 
 const arroundNumber = number => {
-  const arround = Math.round(number * 100) / 100
+  const arround = Math.round(number * 10) / 10
   return arround.toString().replace('.', ',')
 }
 
