@@ -116,7 +116,10 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
   }, [selectedAdresse, collegeFeature, map, isMobileDevice])
 
   useEffect(() => {
-    if (!collegeItineraire) {
+    if (!collegeItineraire && map.current.isStyleLoaded && map.current.getSource('itineraire') && map.current.getLayer('itineraire-line')) {
+      map.current.removeLayer('itineraire-line')
+      layersLoaded.current = false
+    } else if (!collegeItineraire) {
       return
     }
 
