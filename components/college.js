@@ -26,8 +26,8 @@ const College = ({college, itineraire}) => (
         <p className='college-etablissement'>{college.nomCommuneEtablissement} ({getCodeDepartement(college.codeCommune)})</p>
         {itineraire && (
           <>
-            <p className='college-itineraire'>Distance : {arroundNumber(itineraire.distance)} km</p>
-            <p className='college-itineraire'>Durée du trajet : environ {arroundMinutes(itineraire.duration)} minutes</p>
+            <p className='college-distance'>Distance : {arroundNumber(itineraire.distance)} km</p>
+            <p className='college-duration'>Durée du trajet : environ {arroundMinutes(itineraire.duration)} minutes</p>
           </>
         )}
       </>
@@ -45,8 +45,8 @@ const College = ({college, itineraire}) => (
         margin: 0;
       }
 
-      .college-etablissement {
-        margin: 20px 0;
+      .college-duration {
+        margin-bottom: 5px;
       }
     `}
     </style>
