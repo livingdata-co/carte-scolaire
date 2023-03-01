@@ -2,5 +2,5 @@
 
 export default ({
   sidebar: '460px',
-  header: '104px'
+  header: '84px'
 })
