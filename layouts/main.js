@@ -34,7 +34,7 @@ const Main = ({children}) => {
       <main>{children}</main>
 
       {isModalOpen && (
-        <Popup title='Bienvenue sur l’outil carte scolaire' onClose={handlePopupClose}>
+        <Popup title='Bienvenue sur l’outil Carte Scolaire' onClose={handlePopupClose}>
           <ModalContent />
         </Popup>
       )}
