@@ -3,7 +3,15 @@ import PropTypes from 'prop-types'
 import colors from '@/styles/colors.js'
 import {getCodeDepartement} from '@/lib/util/adresse.js'
 
-const College = ({college}) => (
+function formatDistance(distance) {
+  return (Math.round(distance * 10) / 10).toString().replace('.', ',')
+}
+
+function formatDuration(minutes) {
+  return minutes <= 1 ? 1 : Math.round(minutes)
+}
+
+const College = ({college, itineraire}) => (
   <div className='college-container'>
     {college.erreur ? (
       <p>{college.erreur}</p>
@@ -11,6 +19,12 @@ const College = ({college}) => (
       <>
         <h2 className='college-nom'>{college.nom}</h2>
         <p className='college-etablissement'>{college.nomCommuneEtablissement} ({getCodeDepartement(college.codeCommune)})</p>
+        {itineraire && (
+          <>
+            <p className='college-distance'>Distance : {formatDistance(itineraire.distance)} km</p>
+            <p className='college-duration'>Durée du trajet : environ {formatDuration(itineraire.duration)} minutes</p>
+          </>
+        )}
       </>
     )}
     <style jsx>{`
@@ -26,8 +40,8 @@ const College = ({college}) => (
         margin: 0;
       }
 
-      .college-etablissement {
-        margin: 20px 0;
+      .college-duration {
+        margin-bottom: 5px;
       }
     `}
     </style>
@@ -35,7 +49,12 @@ const College = ({college}) => (
 )
 
 College.propTypes = {
-  college: PropTypes.object.isRequired
+  college: PropTypes.object.isRequired,
+  itineraire: PropTypes.object
+}
+
+College.defaultProps = {
+  itineraire: null
 }
 
 export default College
