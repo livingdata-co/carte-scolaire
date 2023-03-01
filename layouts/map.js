@@ -6,7 +6,7 @@ import Map from '@/components/map/index.js'
 import MapSidebar from '@/components/map-sidebar.js'
 
 // Mobile layout
-export const Mobile = ({selectedAdresse, selectedCollege, collegeFeature, onSelectAdresse, onSelectCollege, onSelectCollegeFeature}) => (
+export const Mobile = ({selectedAdresse, selectedCollege, collegeFeature, collegeItineraire, onSelectAdresse, onSelectCollege, onSelectCollegeFeature, onSelectCollegeItineraire}) => (
   <div className='mobile-layout-container'>
     <div className='mobile-map-wrapper'>
       <Map
@@ -14,6 +14,7 @@ export const Mobile = ({selectedAdresse, selectedCollege, collegeFeature, onSele
         selectedAdresse={selectedAdresse}
         selectedCollege={selectedCollege}
         collegeFeature={collegeFeature}
+        collegeItineraire={collegeItineraire}
       />
     </div>
 
@@ -21,9 +22,11 @@ export const Mobile = ({selectedAdresse, selectedCollege, collegeFeature, onSele
       <MapSidebar
         selectedAdresse={selectedAdresse}
         selectedCollege={selectedCollege}
+        collegeItineraire={collegeItineraire}
         onSelectAdresse={onSelectAdresse}
         onSelectCollege={onSelectCollege}
         onSelectCollegeFeature={onSelectCollegeFeature}
+        onSelectCollegeItineraire={onSelectCollegeItineraire}
       />
     </div>
 
@@ -51,27 +54,32 @@ Mobile.propTypes = {
   selectedAdresse: PropTypes.object,
   selectedCollege: PropTypes.object,
   collegeFeature: PropTypes.object,
+  collegeItineraire: PropTypes.object,
   onSelectAdresse: PropTypes.func.isRequired,
   onSelectCollege: PropTypes.func.isRequired,
-  onSelectCollegeFeature: PropTypes.func.isRequired
+  onSelectCollegeFeature: PropTypes.func.isRequired,
+  onSelectCollegeItineraire: PropTypes.func.isRequired
 }
 
 Mobile.defaultProps = {
   selectedAdresse: null,
   selectedCollege: null,
-  collegeFeature: null
+  collegeFeature: null,
+  collegeItineraire: null
 }
 
 // Desktop layout
-export const Desktop = ({selectedAdresse, selectedCollege, collegeFeature, onSelectAdresse, onSelectCollege, onSelectCollegeFeature}) => (
+export const Desktop = ({selectedAdresse, selectedCollege, collegeFeature, collegeItineraire, onSelectAdresse, onSelectCollege, onSelectCollegeFeature, onSelectCollegeItineraire}) => (
   <div className='desktop-layout-container'>
     <div className='layout-sidebar-wrapper'>
       <MapSidebar
         selectedAdresse={selectedAdresse}
         selectedCollege={selectedCollege}
+        collegeItineraire={collegeItineraire}
         onSelectAdresse={onSelectAdresse}
         onSelectCollege={onSelectCollege}
         onSelectCollegeFeature={onSelectCollegeFeature}
+        onSelectCollegeItineraire={onSelectCollegeItineraire}
       />
     </div>
 
@@ -80,6 +88,7 @@ export const Desktop = ({selectedAdresse, selectedCollege, collegeFeature, onSel
         selectedAdresse={selectedAdresse}
         selectedCollege={selectedCollege}
         collegeFeature={collegeFeature}
+        collegeItineraire={collegeItineraire}
       />
     </div>
 
@@ -111,14 +120,18 @@ Desktop.propTypes = {
   selectedAdresse: PropTypes.object,
   selectedCollege: PropTypes.object,
   collegeFeature: PropTypes.object,
+  collegeItineraire: PropTypes.object,
   onSelectAdresse: PropTypes.func.isRequired,
   onSelectCollege: PropTypes.func.isRequired,
-  onSelectCollegeFeature: PropTypes.func.isRequired
+  onSelectCollegeFeature: PropTypes.func.isRequired,
+  onSelectCollegeItineraire: PropTypes.func.isRequired
+
 }
 
 Desktop.defaultProps = {
   selectedAdresse: null,
   selectedCollege: null,
-  collegeFeature: null
+  collegeFeature: null,
+  collegeItineraire: null
 }
 
