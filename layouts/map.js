@@ -33,12 +33,12 @@ export const Mobile = ({selectedAdresse, selectedCollege, onSelectAdresse, onSel
       }
 
       .mobile-map-wrapper {
-        flex: 6;
+        flex: 2;
         flex-shrink: 0;
       }
 
       .mobile-sidebar-wrapper {
-        flex: 1;
+        flex: 4;
         flex-shrink: 0;
       }
     `}</style>
