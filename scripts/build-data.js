@@ -8,24 +8,22 @@ import {groupBy, keyBy} from 'lodash-es'
 import JSONStream from 'JSONStream'
 import pumpify from 'pumpify'
 import {featureCollection, feature} from '@turf/turf'
-import {getCommune, getCommunes, communeFiltered} from './lib/cog.js'
-import {buildCarteSecteurFeatures} from './lib/carte-secteur.js'
-import {getContour} from './lib/contours.js'
-import {fileExists} from './lib/fs.js'
-
-const distPath = new URL('dist/', import.meta.url)
+import {getCommune, getCommunes, communeFiltered} from '../build/cog.js'
+import {buildCarteSecteurFeatures} from '../build/carte-secteur.js'
+import {getContour} from '../build/contours.js'
+import {fileExists} from '../build/fs.js'
 
 const communesActuelles = await getCommunes()
 
 async function getIndexedColleges() {
-  const datasetText = await readFile(new URL('dist/colleges.geojson', import.meta.url), {encoding: 'utf8'})
+  const datasetText = await readFile(new URL('../dist/colleges.geojson', import.meta.url), {encoding: 'utf8'})
   const {features} = JSON.parse(datasetText)
   const colleges = features.map(({properties}) => properties)
   return keyBy(colleges, 'codeRNE')
 }
 
 async function readCarteScolaireRows() {
-  const datasetText = await readFile(new URL('sources/carte-scolaire.json', import.meta.url), {encoding: 'utf8'})
+  const datasetText = await readFile(new URL('../sources/carte-scolaire.json', import.meta.url), {encoding: 'utf8'})
   return JSON.parse(datasetText).map(r => r.fields)
 }
 
@@ -34,7 +32,7 @@ const colleges = await getIndexedColleges()
 
 const communesRows = groupBy(carteScolaireRows, 'code_insee')
 
-const communesFeaturesWriteStream = createWriteStream(new URL('secteurs.geojson', distPath))
+const communesFeaturesWriteStream = createWriteStream(new URL('../dist/secteurs.geojson', import.meta.url))
 const communesFeaturesStream = pumpify.obj(
   JSONStream.stringify(
     '{"type":"FeatureCollection","features":[',
@@ -129,5 +127,5 @@ async function writeCommuneFeatures(codeCommune, features, writeCommuneFile = tr
 }
 
 function getCommuneFileUrl(codeCommune) {
-  return new URL(`secteur-${codeCommune}.json`, distPath)
+  return new URL(`../dist/secteur-${codeCommune}.json`, import.meta.url)
 }

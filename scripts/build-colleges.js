@@ -4,16 +4,12 @@
 import {readFile, writeFile, mkdir} from 'node:fs/promises'
 import {featureCollection} from '@turf/turf'
 
-import {communeFiltered} from './lib/cog.js'
+import {communeFiltered} from '../build/cog.js'
 
-const sourcesPath = new URL('sources/', import.meta.url)
-const distPath = new URL('dist/', import.meta.url)
-const collegesFilePath = new URL('colleges.geojson', distPath)
-
-await mkdir(distPath, {recursive: true})
+await mkdir(new URL('../dist/', import.meta.url), {recursive: true})
 
 async function readEtablissementRows() {
-  const datasetText = await readFile(new URL('etablissements.json', sourcesPath), {encoding: 'utf8'})
+  const datasetText = await readFile(new URL('../sources/etablissements.json', import.meta.url), {encoding: 'utf8'})
   return JSON.parse(datasetText).map(r => r.fields)
 }
 
@@ -50,6 +46,6 @@ const features = etablissements.filter(etablissement =>
   })
 
 await writeFile(
-  collegesFilePath,
+  new URL('../dist/colleges.geojson', import.meta.url),
   JSON.stringify(featureCollection(features))
 )

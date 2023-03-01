@@ -9,12 +9,12 @@ import Pbf from 'pbf'
 import geobuf from 'geobuf'
 
 const lmdb = LMDB.open({
-  path: 'secteurs.db'
+  path: '../secteurs.db'
 })
 
 await lmdb.clearAsync()
 
-const fileStream = createReadStream(new URL('dist/secteurs.geojson', import.meta.url))
+const fileStream = createReadStream(new URL('../dist/secteurs.geojson', import.meta.url))
 
 function createParser(jsonPath) {
   const parser = JSONStream.parse(jsonPath)

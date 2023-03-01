@@ -11,10 +11,8 @@ import voronoi from './voronoi.js'
 import {getContour} from './contours.js'
 import {fileExists} from './fs.js'
 
-const adressesPath = new URL('../sources/adresses/', import.meta.url)
-
 async function getAdresses(codeCommune) {
-  const adresseFile = new URL(`adresses-${codeCommune}.csv`, adressesPath)
+  const adresseFile = new URL(`../sources/adresses/adresses-${codeCommune}.csv`, import.meta.url)
 
   try {
     if (await fileExists(adresseFile)) {

@@ -13,9 +13,9 @@
     "start": "NODE_ENV=production node server.js",
     "download-sources": "node scripts/download-sources.js",
     "download-prepared-data": "node scripts/download-prepared-data.js",
-    "build-colleges": "node build-colleges.js",
-    "build-data": "node build-data.js",
-    "build-index": "node build-index.js",
+    "build-colleges": "node scripts/build-colleges.js",
+    "build-data": "node scripts/build-data.js",
+    "build-index": "node scripts/build-index.js",
     "build-tiles": "tippecanoe -Z8 -z12 -o carte-scolaire.mbtiles dist/secteurs.geojson dist/colleges.geojson",
     "lint": "xo"
   },
