@@ -3,17 +3,12 @@ import PropTypes from 'prop-types'
 import colors from '@/styles/colors.js'
 import {getCodeDepartement} from '@/lib/util/adresse.js'
 
-const arroundNumber = number => {
-  const arround = Math.round(number * 10) / 10
-  return arround.toString().replace('.', ',')
+function formatDistance(distance) {
+  return (Math.round(distance * 10) / 10).toString().replace('.', ',')
 }
 
-const arroundMinutes = minutes => {
-  if (minutes % 1 < 0.5) {
-    return Math.floor(minutes)
-  }
-
-  return Math.ceil(minutes)
+function formatDuration(minutes) {
+  return minutes <= 1 ? 1 : Math.round(minutes)
 }
 
 const College = ({college, itineraire}) => (
@@ -26,8 +21,8 @@ const College = ({college, itineraire}) => (
         <p className='college-etablissement'>{college.nomCommuneEtablissement} ({getCodeDepartement(college.codeCommune)})</p>
         {itineraire && (
           <>
-            <p className='college-distance'>Distance : {arroundNumber(itineraire.distance)} km</p>
-            <p className='college-duration'>Durée du trajet : environ {arroundMinutes(itineraire.duration)} minutes</p>
+            <p className='college-distance'>Distance : {formatDistance(itineraire.distance)} km</p>
+            <p className='college-duration'>Durée du trajet : environ {formatDuration(itineraire.duration)} minutes</p>
           </>
         )}
       </>
