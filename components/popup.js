@@ -1,11 +1,14 @@
 /* eslint-disable no-undef */
-import {useEffect, useRef} from 'react'
+import {useEffect, useRef, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {XSquare} from 'react-feather'
+
+import DeviceContext from '@/contexts/device.js'
 
 import colors from '@/styles/colors.js'
 
 const Popup = ({title, children, onClose}) => {
+  const {isMobileDevice} = useContext(DeviceContext)
   const modalRef = useRef()
 
   useEffect(() => {
@@ -64,6 +67,8 @@ const Popup = ({title, children, onClose}) => {
           padding: 2em;
           border-radius: 4px;
           max-width: 900px;
+          ${isMobileDevice ? 'height: 80%;' : ''}
+          overflow-y: scroll;
         }
 
         .close-container {
