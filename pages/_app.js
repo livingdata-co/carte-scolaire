@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import {DeviceContextProvider} from '@/contexts/device.js'
 
 import '../styles/global.css'
+import 'maplibre-gl/dist/maplibre-gl.css'
 
 const App = ({Component, pageProps}) => (
   <React.StrictMode>
