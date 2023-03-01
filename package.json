@@ -8,10 +8,11 @@
   "type": "module",
   "scripts": {
     "dev": "node server.js",
-    "scalingo-postbuild": "wget -qP dist/ https://carte-scolaire-data.s3.fr-par.scw.cloud/colleges.geojson && wget -q https://carte-scolaire-data.s3.fr-par.scw.cloud/secteurs.db && wget -q https://carte-scolaire-data.s3.fr-par.scw.cloud/carte-scolaire.mbtiles && yarn build",
+    "scalingo-postbuild": "yarn download-prepared-data && yarn build",
     "build": "next build",
     "start": "NODE_ENV=production node server.js",
     "download-sources": "node download-sources.js",
+    "download-prepared-data": "node download-prepared-data.js",
     "build-colleges": "node build-colleges.js",
     "build-data": "node build-data.js",
     "build-index": "node build-index.js",
