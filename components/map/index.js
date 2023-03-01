@@ -15,7 +15,7 @@ const Map = ({selectedAdresse, selectedCollege, isMobileDevice}) => {
   const collegeMarker = useRef(null)
   const collegePopup = useRef(null)
   const prevCollegeFeatureRef = useRef(null)
-  const [map, setMap] = useState(null)
+  const map = useRef(null)
   const [collegeFeature, setCollegeFeature] = useState(null)
   const [error, setError] = useState(null)
 
@@ -39,7 +39,7 @@ const Map = ({selectedAdresse, selectedCollege, isMobileDevice}) => {
       }
     })
 
-    setMap(maplibre)
+    map.current = maplibre
 
     return () => {
       maplibre.remove()
@@ -70,7 +70,7 @@ const Map = ({selectedAdresse, selectedCollege, isMobileDevice}) => {
   }, [selectedCollege])
 
   useEffect(() => {
-    if (selectedAdresse && collegeFeature && map) {
+    if (selectedAdresse && collegeFeature && map?.current) {
       const adressePosition = selectedAdresse.geometry.coordinates
 
       const adresseMarkerElement = document.createElement('div') // eslint-disable-line no-undef
@@ -79,20 +79,20 @@ const Map = ({selectedAdresse, selectedCollege, isMobileDevice}) => {
       const currentAdressePopup = new maplibregl.Popup({offset: 25, closeOnClick: false, closeButton: false})
         .setLngLat(adressePosition)
         .setText(selectedAdresse.properties.label)
-        .addTo(map)
+        .addTo(map.current)
 
       const currentAdresseMarker = new maplibregl.Marker(adresseMarkerElement)
         .setLngLat(adressePosition)
-        .addTo(map)
+        .addTo(map.current)
 
       const currentCollegePopup = new maplibregl.Popup({offset: 25, closeOnClick: false, closeButton: false})
         .setLngLat(collegeFeature.geometry.coordinates)
         .setText(collegeFeature.properties.nom)
-        .addTo(map)
+        .addTo(map.current)
 
       const currentCollegeMarker = new maplibregl.Marker(collegeMarkerElement)
         .setLngLat(collegeFeature.geometry.coordinates)
-        .addTo(map)
+        .addTo(map.current)
 
       currentAdresseMarker.getElement().innerHTML = '<img src="/images/map/home.svg">'
       currentCollegeMarker.getElement().innerHTML = '<img src="/images/map/pen.svg">'
@@ -103,7 +103,7 @@ const Map = ({selectedAdresse, selectedCollege, isMobileDevice}) => {
       collegePopup.current = currentCollegePopup
 
       if (prevCollegeFeatureRef.current !== collegeFeature) {
-        map.fitBounds([
+        map.current.fitBounds([
           adressePosition,
           collegeFeature.geometry.coordinates
         ], {padding: isMobileDevice ? 50 : 200})
