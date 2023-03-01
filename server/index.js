@@ -9,12 +9,11 @@ import createError from 'http-errors'
 import cors from 'cors'
 import next from 'next'
 
-import w from './lib/util/w.js'
-import errorHandler from './lib/util/error-handler.js'
-import {validateCoordinates} from './lib/util/validate.js'
-import {getTile} from './lib/util/mbtiles.js'
-
-import {search, getCollege} from './lib/search.js'
+import w from './w.js'
+import errorHandler from './error-handler.js'
+import {validateCoordinates} from './validate.js'
+import {getTile} from './mbtiles.js'
+import {search, getCollege} from './search.js'
 
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({dev})
@@ -77,6 +76,6 @@ app.prepare().then(() => {
   const port = process.env.PORT || 3000
 
   server.listen(port, () => {
-    console.log(`Start listening on port ${port}`)
+    console.log(`Start listening on port ${port}. Visit http://localhost:${port}`)
   })
 })

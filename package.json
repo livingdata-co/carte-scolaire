@@ -7,10 +7,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node server.js",
+    "dev": "node server",
     "scalingo-postbuild": "yarn download-prepared-data && yarn build",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js",
+    "start": "NODE_ENV=production node server",
     "download-sources": "node scripts/download-sources.js",
     "download-prepared-data": "node scripts/download-prepared-data.js",
     "build-colleges": "node scripts/build-colleges.js",
