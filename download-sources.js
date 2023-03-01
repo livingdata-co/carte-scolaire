@@ -1,18 +1,18 @@
 #!/usr/bin/env node
-import {writeFile, mkdir} from 'node:fs/promises'
-import got from 'got'
+import {downloadTo} from './lib/util/download.js'
 
-const sourcesPath = new URL('sources/', import.meta.url)
-const adressesSourcesPath = new URL('sources/adresses/', import.meta.url)
+console.log('  * Téléchargement de carte-scolaire.json')
 
-await mkdir(adressesSourcesPath, {recursive: true})
+await downloadTo(
+  'https://data.education.gouv.fr/explore/dataset/fr-en-carte-scolaire-colleges-publics/download?format=json&timezone=Europe/Berlin&use_labels_for_header=false',
+  './sources/carte-scolaire.json',
+  import.meta.url
+)
 
-const CARTE_SCOLAIRE_DATASET_URL = 'https://data.education.gouv.fr/explore/dataset/fr-en-carte-scolaire-colleges-publics/download?format=json&timezone=Europe/Berlin&use_labels_for_header=false'
+console.log('  * Téléchargement de etablissements.json')
 
-const carteScolaireData = await got(CARTE_SCOLAIRE_DATASET_URL).buffer()
-await writeFile(new URL('carte-scolaire.json', sourcesPath), carteScolaireData)
-
-const ETABLISSEMENTS_DATASET_URL = 'https://data.education.gouv.fr/explore/dataset/fr-en-adresse-et-geolocalisation-etablissements-premier-et-second-degre/download?format=json&timezone=Europe/Berlin'
-
-const etablissementsData = await got(ETABLISSEMENTS_DATASET_URL).buffer()
-await writeFile(new URL('etablissements.json', sourcesPath), etablissementsData)
+await downloadTo(
+  'https://data.education.gouv.fr/explore/dataset/fr-en-adresse-et-geolocalisation-etablissements-premier-et-second-degre/download?format=json&timezone=Europe/Berlin',
+  'etablissements.json',
+  import.meta.url
+)
