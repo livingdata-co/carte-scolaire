@@ -8,6 +8,14 @@ const arroundNumber = number => {
   return arround.toString().replace('.', ',')
 }
 
+const arroundMinutes = minutes => {
+  if (minutes % 1 < 0.5) {
+    return Math.floor(minutes)
+  }
+
+  return Math.ceil(minutes)
+}
+
 const College = ({college, itineraire}) => (
   <div className='college-container'>
     {college.erreur ? (
@@ -19,7 +27,7 @@ const College = ({college, itineraire}) => (
         {itineraire && (
           <>
             <p className='college-itineraire'>Distance : {arroundNumber(itineraire.distance)} km</p>
-            <p className='college-itineraire'>Durée de trajet : {arroundNumber(itineraire.duration)} minutes</p>
+            <p className='college-itineraire'>Durée du trajet : environ {arroundMinutes(itineraire.duration)} minutes</p>
           </>
         )}
       </>
