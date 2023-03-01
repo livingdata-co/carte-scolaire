@@ -5,13 +5,13 @@ import {debounce} from 'lodash-es'
 import AutocompleteInput from '@/components/search/autocomplete-input.js'
 import renderAddok from '@/components/search/render-addok.js'
 
-import {search, isFirstCharValid, secteur, getCollege as getCollegeFeature} from '@/lib/api.js'
+import {search, isFirstCharValid, secteur, getCollege as getCollegeFeature, getCollegeItineraire} from '@/lib/api.js'
 
 import {useInput} from '@/hooks/input.js'
 
 import colors from '@/styles/colors.js'
 
-const Search = ({onSelectAdresse, onSelectCollege, onSelectCollegeFeature}) => {
+const Search = ({onSelectAdresse, onSelectCollege, onSelectCollegeFeature, onSelectCollegeItineraire}) => {
   const [input, setInput] = useInput('')
   const [results, setResults] = useState([])
   const [orderResults, setOrderResults] = useState([])
@@ -36,6 +36,15 @@ const Search = ({onSelectAdresse, onSelectCollege, onSelectCollegeFeature}) => {
     }
   }
 
+  const getItineraire = async (start, end) => {
+    try {
+      const itineraire = await getCollegeItineraire({start, end, distanceUnit: 'kilometer'})
+      return itineraire
+    } catch (error) {
+      setError(error)
+    }
+  }
+
   const handleSelect = async feature => {
     const {label} = feature.properties
     setInput(label)
@@ -47,9 +56,12 @@ const Search = ({onSelectAdresse, onSelectCollege, onSelectCollegeFeature}) => {
 
     if (college.properties.erreur) {
       onSelectCollegeFeature(null)
+      onSelectCollegeItineraire(null)
     } else {
       const collegeFeature = await getFeature(college.properties.codeRNE)
       onSelectCollegeFeature(collegeFeature)
+      const itineraire = await getItineraire(feature.geometry.coordinates, collegeFeature.geometry.coordinates)
+      onSelectCollegeItineraire(itineraire)
     }
   }
 
@@ -152,7 +164,8 @@ const Search = ({onSelectAdresse, onSelectCollege, onSelectCollegeFeature}) => {
 Search.propTypes = {
   onSelectAdresse: PropTypes.func.isRequired,
   onSelectCollege: PropTypes.func.isRequired,
-  onSelectCollegeFeature: PropTypes.func.isRequired
+  onSelectCollegeFeature: PropTypes.func.isRequired,
+  onSelectCollegeItineraire: PropTypes.func.isRequired
 }
 
 export default Search
