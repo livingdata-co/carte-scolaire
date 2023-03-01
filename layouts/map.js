@@ -38,7 +38,7 @@ export const Mobile = ({selectedAdresse, selectedCollege, collegeFeature, colleg
       }
 
       .mobile-map-wrapper {
-        flex: 6;
+        flex: 2;
         flex-shrink: 0;
       }
 

@@ -121,11 +121,11 @@ const Search = ({onSelectAdresse, onSelectCollege, onSelectCollegeFeature, onSel
   }, [input])
 
   return (
-    <>
+    <div className='search-wrapper'>
       <AutocompleteInput
-        label='Retrouvez votre collège'
+        label='Rechercher le collège de rattachement d’une adresse donnée'
         value={input}
-        placeholder='Renseignez votre adresse'
+        placeholder='Renseignez une adresse ou une commune'
         ariaLabel='Recherche'
         results={orderResults}
         isLoading={loading}
@@ -143,6 +143,10 @@ const Search = ({onSelectAdresse, onSelectCollege, onSelectCollegeFeature, onSel
         </div>}
 
       <style jsx>{`
+        .search-wrapper {
+          margin-top: 1.5em;
+        }
+
         .error {
           margin: 1em;
         }
@@ -157,7 +161,7 @@ const Search = ({onSelectAdresse, onSelectCollege, onSelectCollegeFeature, onSel
           position: relative;
         }
       `}</style>
-    </>
+    </div>
   )
 }
 

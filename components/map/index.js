@@ -83,7 +83,7 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
         .addTo(map.current)
 
       currentAdresseMarker.getElement().innerHTML = '<img src="/images/map/home.svg">'
-      currentCollegeMarker.getElement().innerHTML = '<img src="/images/map/pen.svg">'
+      currentCollegeMarker.getElement().innerHTML = '<img src="/images/map/school.svg">'
 
       adresseMarker.current = currentAdresseMarker
       adressePopup.current = currentAdressePopup
