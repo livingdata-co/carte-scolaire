@@ -14,14 +14,14 @@ const Header = () => {
   return (
     <header>
       <div className='presentation'>
-        <Image src='/images/logo-ld-short.png' width={50} height={56} />
+        <Image src='/images/logo-ld-short.png' width={30} height={33} />
         <div className='head-title-container'>
-          <h1>Carte scolaire</h1>
+          <h1 className='title'>Carte scolaire</h1>
         </div>
       </div>
 
       <button type='button' onClick={handleModal}>
-        <Info /> À propos
+        <Info size={16} /> À propos
       </button>
 
       {isModalOpen && (
@@ -45,9 +45,13 @@ const Header = () => {
         .head-title-container {
           display: flex;
           align-items: center;
-          height: 56px;
+          height: 36px;
           border-left: 4px solid rgba(255, 255, 255, 0.33);
           padding-left: 10px;
+        }
+
+        .title {
+          font-size: 1.5em;
         }
 
         .presentation {
@@ -69,7 +73,6 @@ const Header = () => {
           gap: .5em;
           cursor: pointer;
           border-bottom: 2px solid transparent;
-          padding: .5em 0;
         }
 
         header button:hover {
