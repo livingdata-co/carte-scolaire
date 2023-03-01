@@ -91,7 +91,7 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
       map.current.fitBounds([
         adressePosition,
         collegeFeature.geometry.coordinates
-      ], {padding: isMobileDevice ? 50 : 200})
+      ], {padding: isMobileDevice ? 120 : 200})
     }
 
     return () => {
