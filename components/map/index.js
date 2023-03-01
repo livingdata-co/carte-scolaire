@@ -26,6 +26,8 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
   const adressePopup = useRef(null)
   const collegeMarker = useRef(null)
   const collegePopup = useRef(null)
+  const sourcesLoaded = useRef(false)
+  const layersLoaded = useRef(false)
   const map = useRef(null)
 
   useEffect(() => {
@@ -114,14 +116,11 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
   }, [selectedAdresse, collegeFeature, map, isMobileDevice])
 
   useEffect(() => {
-    const itineraireSource = map?.current?.getSource('itineraire')
-
-    if (itineraireSource) {
-      map.current.removeLayer('itineraire-line')
-      map.current.removeSource('itineraire')
+    if (!collegeItineraire) {
+      return
     }
 
-    if (collegeItineraire && map?.current && map?.current?.isStyleLoaded()) {
+    if (!sourcesLoaded.current) {
       map.current.addSource('itineraire', {
         type: 'geojson',
         data: {
@@ -130,16 +129,20 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
         }
       })
 
-      map.current.addLayer(itineraireLayer)
+      sourcesLoaded.current = true
     }
 
-    return () => {
-      if (itineraireSource) {
-        map.current.removeLayer('itineraire-line')
-        map.current.removeSource('itineraire')
-      }
+    if (!layersLoaded.current) {
+      map.current.addLayer(itineraireLayer)
+
+      layersLoaded.current = true
     }
-  }, [collegeItineraire, map])
+
+    map.current.getSource('itineraire').setData({
+      type: 'Feature',
+      geometry: collegeItineraire?.geometry
+    })
+  }, [collegeItineraire])
 
   return (
     <div ref={mapContainer} style={{width: '100%', height: '100%'}} />
