@@ -1,23 +1,34 @@
-import {useEffect, useRef, useState} from 'react'
+import {useEffect, useRef} from 'react'
 import PropTypes from 'prop-types'
 import maplibregl from 'maplibre-gl'
 
 import {sources} from '@/components/map/sources.js'
 import {layers} from '@/components/map/layers.js'
-import MapError from '@/components/map/map-error.js'
+import colors from '@/styles/colors.js'
 
-import {getCollege} from '@/lib/api.js'
+const itineraireLayer = {
+  id: 'itineraire-line',
+  type: 'line',
+  source: 'itineraire',
+  layout: {
+    'line-join': 'round',
+    'line-cap': 'round'
+  },
+  paint: {
+    'line-color': colors.darkGrey,
+    'line-width': 4
+  }
+}
 
-const Map = ({selectedAdresse, selectedCollege, isMobileDevice}) => {
+const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice}) => {
   const mapContainer = useRef(null)
   const adresseMarker = useRef(null)
   const adressePopup = useRef(null)
   const collegeMarker = useRef(null)
   const collegePopup = useRef(null)
-  const prevCollegeFeatureRef = useRef(null)
+  const sourcesLoaded = useRef(false)
+  const layersLoaded = useRef(false)
   const map = useRef(null)
-  const [collegeFeature, setCollegeFeature] = useState(null)
-  const [error, setError] = useState(null)
 
   useEffect(() => {
     const maplibre = new maplibregl.Map({
@@ -45,29 +56,6 @@ const Map = ({selectedAdresse, selectedCollege, isMobileDevice}) => {
       maplibre.remove()
     }
   }, [])
-
-  async function getCoordinates(codeRNE) {
-    try {
-      const collegeFeature = await getCollege(codeRNE)
-      setCollegeFeature(collegeFeature)
-    } catch (error) {
-      setError(error)
-    }
-  }
-
-  useEffect(() => {
-    if (selectedCollege) {
-      setError(null)
-
-      const {erreur, codeRNE} = selectedCollege.properties
-
-      if (!erreur && codeRNE) {
-        getCoordinates(codeRNE)
-      } else {
-        setCollegeFeature(null)
-      }
-    }
-  }, [selectedCollege])
 
   useEffect(() => {
     if (selectedAdresse && collegeFeature && map?.current) {
@@ -102,12 +90,10 @@ const Map = ({selectedAdresse, selectedCollege, isMobileDevice}) => {
       collegeMarker.current = currentCollegeMarker
       collegePopup.current = currentCollegePopup
 
-      if (prevCollegeFeatureRef.current !== collegeFeature) {
-        map.current.fitBounds([
-          adressePosition,
-          collegeFeature.geometry.coordinates
-        ], {padding: isMobileDevice ? 50 : 200})
-      }
+      map.current.fitBounds([
+        adressePosition,
+        collegeFeature.geometry.coordinates
+      ], {padding: isMobileDevice ? 120 : 200})
     }
 
     return () => {
@@ -130,28 +116,53 @@ const Map = ({selectedAdresse, selectedCollege, isMobileDevice}) => {
   }, [selectedAdresse, collegeFeature, map, isMobileDevice])
 
   useEffect(() => {
-    prevCollegeFeatureRef.current = collegeFeature
-  }, [collegeFeature])
+    if (!collegeItineraire && map.current.isStyleLoaded && map.current.getSource('itineraire') && map.current.getLayer('itineraire-line')) {
+      map.current.removeLayer('itineraire-line')
+      layersLoaded.current = false
+    } else if (!collegeItineraire) {
+      return
+    }
+
+    if (!sourcesLoaded.current) {
+      map.current.addSource('itineraire', {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: collegeItineraire.geometry
+        }
+      })
+
+      sourcesLoaded.current = true
+    }
+
+    if (!layersLoaded.current) {
+      map.current.addLayer(itineraireLayer)
+
+      layersLoaded.current = true
+    }
+
+    map.current.getSource('itineraire').setData({
+      type: 'Feature',
+      geometry: collegeItineraire?.geometry
+    })
+  }, [collegeItineraire])
 
   return (
-    <>
-      {error && (
-        <MapError message={error.message} />
-      )}
-      <div ref={mapContainer} style={{width: '100%', height: '100%'}} />
-    </>
+    <div ref={mapContainer} style={{width: '100%', height: '100%'}} />
   )
 }
 
 Map.propTypes = {
   selectedAdresse: PropTypes.object,
-  selectedCollege: PropTypes.object,
+  collegeFeature: PropTypes.object,
+  collegeItineraire: PropTypes.object,
   isMobileDevice: PropTypes.bool
 }
 
 Map.defaultProps = {
   selectedAdresse: null,
-  selectedCollege: null,
+  collegeFeature: null,
+  collegeItineraire: null,
   isMobileDevice: false
 }
 
