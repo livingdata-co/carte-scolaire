@@ -9,6 +9,7 @@ const Homepage = () => {
   const {isMobileDevice} = useContext(DeviceContext)
   const [selectedAdresse, setSelectedAdresse] = useState(null)
   const [selectedCollege, setSelectedCollege] = useState(null)
+  const [collegeFeature, setCollegeFeature] = useState(null)
 
   const handleSelectAdresse = adresse => {
     setSelectedAdresse(adresse)
@@ -18,6 +19,11 @@ const Homepage = () => {
     setSelectedCollege(college)
   }
 
+  const handleCollegeFeature = feature => {
+    setCollegeFeature(feature)
+  }
+  }
+
   const Layout = useMemo(() => isMobileDevice ? Mobile : Desktop, [isMobileDevice])
 
   return (
@@ -25,8 +31,10 @@ const Homepage = () => {
       <Layout
         selectedAdresse={selectedAdresse}
         selectedCollege={selectedCollege}
+        collegeFeature={collegeFeature}
         onSelectAdresse={handleSelectAdresse}
         onSelectCollege={handleSelectCollege}
+        onSelectCollegeFeature={handleCollegeFeature}
       />
     </Page>
   )
