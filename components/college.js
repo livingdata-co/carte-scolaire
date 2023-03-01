@@ -3,7 +3,12 @@ import PropTypes from 'prop-types'
 import colors from '@/styles/colors.js'
 import {getCodeDepartement} from '@/lib/util/adresse.js'
 
-const College = ({college}) => (
+const arroundNumber = number => {
+  const arround = Math.round(number * 100) / 100
+  return arround.toString().replace('.', ',')
+}
+
+const College = ({college, itineraire}) => (
   <div className='college-container'>
     {college.erreur ? (
       <p>{college.erreur}</p>
@@ -11,6 +16,12 @@ const College = ({college}) => (
       <>
         <h2 className='college-nom'>{college.nom}</h2>
         <p className='college-etablissement'>{college.nomCommuneEtablissement} ({getCodeDepartement(college.codeCommune)})</p>
+        {itineraire && (
+          <>
+            <p className='college-itineraire'>Distance : {arroundNumber(itineraire.distance)} km</p>
+            <p className='college-itineraire'>Durée de trajet : {arroundNumber(itineraire.duration)} minutes</p>
+          </>
+        )}
       </>
     )}
     <style jsx>{`
@@ -35,7 +46,12 @@ const College = ({college}) => (
 )
 
 College.propTypes = {
-  college: PropTypes.object.isRequired
+  college: PropTypes.object.isRequired,
+  itineraire: PropTypes.object
+}
+
+College.defualtProps = {
+  itineraire: null
 }
 
 export default College
