@@ -10,6 +10,7 @@ export const Mobile = ({selectedAdresse, selectedCollege, onSelectAdresse, onSel
   <div className='mobile-layout-container'>
     <div className='mobile-map-wrapper'>
       <Map
+        isMobileDevice
         selectedAdresse={selectedAdresse}
         selectedCollege={selectedCollege}
       />

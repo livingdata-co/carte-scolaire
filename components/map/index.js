@@ -8,7 +8,7 @@ import MapError from '@/components/map/map-error.js'
 
 import {getCollege} from '@/lib/api.js'
 
-const Map = ({selectedAdresse, selectedCollege}) => {
+const Map = ({selectedAdresse, selectedCollege, isMobileDevice}) => {
   const mapContainer = useRef(null)
   const adresseMarker = useRef(null)
   const adressePopup = useRef(null)
@@ -106,7 +106,7 @@ const Map = ({selectedAdresse, selectedCollege}) => {
         map.fitBounds([
           adressePosition,
           collegeFeature.geometry.coordinates
-        ], {padding: 200})
+        ], {padding: isMobileDevice ? 50 : 200})
       }
     }
 
@@ -127,7 +127,7 @@ const Map = ({selectedAdresse, selectedCollege}) => {
         collegePopup.current.remove()
       }
     }
-  }, [selectedAdresse, collegeFeature, map])
+  }, [selectedAdresse, collegeFeature, map, isMobileDevice])
 
   useEffect(() => {
     prevCollegeFeatureRef.current = collegeFeature
@@ -145,12 +145,14 @@ const Map = ({selectedAdresse, selectedCollege}) => {
 
 Map.propTypes = {
   selectedAdresse: PropTypes.object,
-  selectedCollege: PropTypes.object
+  selectedCollege: PropTypes.object,
+  isMobileDevice: PropTypes.bool
 }
 
 Map.defaultProps = {
   selectedAdresse: null,
-  selectedCollege: null
+  selectedCollege: null,
+  isMobileDevice: false
 }
 
 export default Map
