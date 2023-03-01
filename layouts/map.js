@@ -38,7 +38,7 @@ export const Mobile = ({selectedAdresse, selectedCollege, onSelectAdresse, onSel
       }
 
       .mobile-sidebar-wrapper {
-        flex: 4;
+        flex: 1;
         flex-shrink: 0;
       }
     `}</style>
