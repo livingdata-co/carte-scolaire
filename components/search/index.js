@@ -38,7 +38,7 @@ const Search = ({onSelectAdresse, onSelectCollege, onSelectCollegeFeature, onSel
 
   const getItineraire = async (start, end) => {
     try {
-      const itineraire = await getCollegeItineraire({start, end, distanceUnit: 'kilometer'})
+      const itineraire = await getCollegeItineraire(start, end)
       return itineraire
     } catch (error) {
       setError(error)
