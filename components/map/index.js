@@ -4,8 +4,23 @@ import maplibregl from 'maplibre-gl'
 
 import {sources} from '@/components/map/sources.js'
 import {layers} from '@/components/map/layers.js'
+import colors from '@/styles/colors.js'
 
-const Map = ({selectedAdresse, collegeFeature, isMobileDevice}) => {
+const itineraireLayer = {
+  id: 'itineraire-line',
+  type: 'line',
+  source: 'itineraire',
+  layout: {
+    'line-join': 'round',
+    'line-cap': 'round'
+  },
+  paint: {
+    'line-color': colors.darkGrey,
+    'line-width': 4
+  }
+}
+
+const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice}) => {
   const mapContainer = useRef(null)
   const adresseMarker = useRef(null)
   const adressePopup = useRef(null)
@@ -98,6 +113,34 @@ const Map = ({selectedAdresse, collegeFeature, isMobileDevice}) => {
     }
   }, [selectedAdresse, collegeFeature, map, isMobileDevice])
 
+  useEffect(() => {
+    const itineraireSource = map?.current?.getSource('itineraire')
+
+    if (itineraireSource) {
+      map.current.removeLayer('itineraire-line')
+      map.current.removeSource('itineraire')
+    }
+
+    if (collegeItineraire && map?.current && map?.current?.isStyleLoaded()) {
+      map.current.addSource('itineraire', {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: collegeItineraire.geometry
+        }
+      })
+
+      map.current.addLayer(itineraireLayer)
+    }
+
+    return () => {
+      if (itineraireSource) {
+        map.current.removeLayer('itineraire-line')
+        map.current.removeSource('itineraire')
+      }
+    }
+  }, [collegeItineraire, map])
+
   return (
     <div ref={mapContainer} style={{width: '100%', height: '100%'}} />
   )
@@ -106,12 +149,14 @@ const Map = ({selectedAdresse, collegeFeature, isMobileDevice}) => {
 Map.propTypes = {
   selectedAdresse: PropTypes.object,
   collegeFeature: PropTypes.object,
+  collegeItineraire: PropTypes.object,
   isMobileDevice: PropTypes.bool
 }
 
 Map.defaultProps = {
   selectedAdresse: null,
   collegeFeature: null,
+  collegeItineraire: null,
   isMobileDevice: false
 }
 
