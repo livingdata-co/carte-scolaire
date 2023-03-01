@@ -1,7 +1,7 @@
 /* eslint no-new: off */
 import MBTiles from '@mapbox/mbtiles'
 
-const tilesPath = new URL('../../carte-scolaire.mbtiles?mode=ro', import.meta.url)
+const tilesPath = new URL('../carte-scolaire.mbtiles?mode=ro', import.meta.url)
 const db = await getLoadedDatabase(tilesPath)
 
 function getLoadedDatabase(dbPath) {
