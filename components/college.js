@@ -53,7 +53,7 @@ College.propTypes = {
   itineraire: PropTypes.object
 }
 
-College.defualtProps = {
+College.defaultProps = {
   itineraire: null
 }
 
