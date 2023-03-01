@@ -16,9 +16,9 @@ function renderHeader(header) {
       <div key={header} className='header'>{featuresTypes[header]}</div>
       <style jsx>{`
           .header {
-            background-color: ${colors.grey};
+            background-color: ${colors.darkGreen};
             color: ${colors.white};
-            padding: 0.2em;
+            padding: .5em;
           }
         `}
       </style>

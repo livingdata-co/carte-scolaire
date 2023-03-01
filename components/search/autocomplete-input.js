@@ -29,10 +29,9 @@ const AutocompleteInput = ({
   const renderInput = props => (
     <>
       {label && (
-        <div className='search-label' style={{marginTop: '1em', textAlign: 'center', color: colors.darkGrey, fontWeight: 'bold'}}>{label}</div>
+        <div style={{margin: '.5em', textAlign: 'center', color: colors.darkGrey, fontWeight: 'bold', fontSize: '1.1em'}}>{label}</div>
       )}
       <div className='search-input-container' role='search'>
-
         <input
           type='search'
           aria-label={ariaLabel}
@@ -53,7 +52,6 @@ const AutocompleteInput = ({
             background-color: ${colors.darkGrey};
             border: 1px solid ${colors.black};
             border-radius: 5px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
             color: ${colors.white};
             display: block;
             font-family: inherit;
@@ -66,6 +64,8 @@ const AutocompleteInput = ({
 
           ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
             color: ${colors.grey};
+            font-size: 1.1em;
+            font-style: italic;
             opacity: 1; /* Firefox */
           }
 
@@ -112,11 +112,13 @@ const AutocompleteInput = ({
           }
 
           .menu {
-            box-shadow: 0 1px 4px ${colors.black};
+            box-shadow: 0 1px 4px ${colors.grey};
             background-color: ${colors.white};
-            border: 1px solid ${colors.black};
             color: ${colors.black};
             border-radius: 0 0 5px 5px;
+            position: absolute;
+            z-index: 999;
+            width: 90%;
           }
 
           .item {
@@ -125,7 +127,7 @@ const AutocompleteInput = ({
             flex-flow: row;
             justify-content: space-between;
             align-items: center;
-            padding: 1em;
+            padding: 2em;
           }
 
           .hidden {
