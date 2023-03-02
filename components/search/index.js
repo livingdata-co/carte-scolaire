@@ -144,7 +144,7 @@ const Search = ({onSelectAdresse, onSelectCollege, onSelectCollegeFeature, onSel
 
       <style jsx>{`
         .search-wrapper {
-          margin-top: 1.5em;
+          margin-top: 1em;
         }
 
         .error {
