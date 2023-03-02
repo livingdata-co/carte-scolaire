@@ -82,8 +82,8 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
         .setLngLat(collegeFeature.geometry.coordinates)
         .addTo(map.current)
 
-      currentAdresseMarker.getElement().innerHTML = '<img src="/images/map/home.svg">'
-      currentCollegeMarker.getElement().innerHTML = '<img src="/images/map/school.svg">'
+      currentAdresseMarker.getElement().innerHTML = `<img width="${isMobileDevice ? '400px' : ''}" src="/images/map/home.svg">`
+      currentCollegeMarker.getElement().innerHTML = `<img width="${isMobileDevice ? '400px' : ''}" src="/images/map/school.svg">`
 
       adresseMarker.current = currentAdresseMarker
       adressePopup.current = currentAdressePopup
