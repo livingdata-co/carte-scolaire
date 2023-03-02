@@ -36,7 +36,7 @@ const Main = ({children}) => {
         <link rel='icon' type='image/png' sizes='500x565' href='/images/logo-ld-short.png' />
         <meta name='description' content='Rechercher le collège de rattachement d’une adresse donnée.' />
         <meta name='author' content='Living Data' />
-        <meta name='viewport' content='initial-scale=1.0, width=device-width' />
+        <meta name='viewport' content='initial-scale=1.0, width=device-width, maximum-scale=1' />
         <meta charSet='utf-8' />
         <meta name='twitter:card' content='app' />
         <meta name='twitter:url' content='https://carte-scolaire.livingdata.co' />
