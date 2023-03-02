@@ -12,22 +12,6 @@ const Homepage = () => {
   const [collegeFeature, setCollegeFeature] = useState(null)
   const [collegeItineraire, setCollegeItineraire] = useState(null)
 
-  const handleSelectAdresse = adresse => {
-    setSelectedAdresse(adresse)
-  }
-
-  const handleSelectCollege = college => {
-    setSelectedCollege(college)
-  }
-
-  const handleCollegeFeature = feature => {
-    setCollegeFeature(feature)
-  }
-
-  const handleCollegeItineraire = itineraire => {
-    setCollegeItineraire(itineraire)
-  }
-
   const Layout = useMemo(() => isMobileDevice ? Mobile : Desktop, [isMobileDevice])
 
   return (
@@ -37,10 +21,10 @@ const Homepage = () => {
         selectedCollege={selectedCollege}
         collegeFeature={collegeFeature}
         collegeItineraire={collegeItineraire}
-        onSelectAdresse={handleSelectAdresse}
-        onSelectCollege={handleSelectCollege}
-        onSelectCollegeFeature={handleCollegeFeature}
-        onSelectCollegeItineraire={handleCollegeItineraire}
+        onSelectAdresse={setSelectedAdresse}
+        onSelectCollege={setSelectedCollege}
+        onSelectCollegeFeature={setCollegeFeature}
+        onSelectCollegeItineraire={setCollegeItineraire}
       />
     </Page>
   )

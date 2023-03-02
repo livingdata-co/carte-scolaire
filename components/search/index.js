@@ -21,52 +21,28 @@ const Search = ({handleFocus, onSelectAdresse, onSelectCollege, onSelectCollegeF
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  const getCollege = async coordinates => {
-    try {
-      const college = await secteur(coordinates)
-      return college
-    } catch (error) {
-      setError(error)
-    }
-  }
-
-  const getFeature = async codeRNE => {
-    try {
-      const collegeFeature = await getCollegeFeature(codeRNE)
-      return collegeFeature
-    } catch (error) {
-      setError(error)
-    }
-  }
-
-  const getItineraire = async (start, end) => {
-    try {
-      const itineraire = await getCollegeItineraire(start, end)
-      return itineraire
-    } catch (error) {
-      setError(error)
-    }
-  }
-
   const handleSelect = async feature => {
     setIsForceBlur(false)
-
     const {label} = feature.properties
     setInput(label)
 
-    const college = await getCollege(feature.geometry.coordinates)
+    try {
+      const college = await secteur(feature.geometry.coordinates)
 
-    onSelectAdresse(feature)
-    onSelectCollege(college)
+      onSelectAdresse(feature)
+      onSelectCollege(college)
 
-    if (college.properties.erreur) {
-      onSelectCollegeFeature(null)
-      onSelectCollegeItineraire(null)
-    } else {
-      const collegeFeature = await getFeature(college.properties.codeRNE)
-      onSelectCollegeFeature(collegeFeature)
-      const itineraire = await getItineraire(feature.geometry.coordinates, collegeFeature.geometry.coordinates)
-      onSelectCollegeItineraire(itineraire)
+      if (college.properties.erreur) {
+        onSelectCollegeFeature(null)
+        onSelectCollegeItineraire(null)
+      } else {
+        const collegeFeature = await getCollegeFeature(college.properties.codeRNE)
+        onSelectCollegeFeature(collegeFeature)
+        const itineraire = await getCollegeItineraire(feature.geometry.coordinates, collegeFeature.geometry.coordinates)
+        onSelectCollegeItineraire(itineraire)
+      }
+    } catch (error) {
+      setError(error)
     }
 
     setIsForceBlur(true)
