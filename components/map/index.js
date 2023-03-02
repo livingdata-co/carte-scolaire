@@ -1,4 +1,4 @@
-import {useEffect, useRef} from 'react'
+import {useEffect, useRef, useCallback, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import maplibregl from 'maplibre-gl'
 
@@ -82,8 +82,8 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
         .setLngLat(collegeFeature.geometry.coordinates)
         .addTo(map.current)
 
-      currentAdresseMarker.getElement().innerHTML = '<img src="/images/map/home.svg">'
-      currentCollegeMarker.getElement().innerHTML = '<img src="/images/map/school.svg">'
+      currentAdresseMarker.getElement().innerHTML = `<img width="${isMobileDevice ? '400px' : ''}" src="/images/map/home.svg">`
+      currentCollegeMarker.getElement().innerHTML = `<img width="${isMobileDevice ? '400px' : ''}" src="/images/map/school.svg">`
 
       adresseMarker.current = currentAdresseMarker
       adressePopup.current = currentAdressePopup
@@ -93,7 +93,7 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
       map.current.fitBounds([
         adressePosition,
         collegeFeature.geometry.coordinates
-      ], {padding: isMobileDevice ? 120 : 200})
+      ], {padding: isMobileDevice ? 50 : 200})
     }
 
     return () => {
@@ -115,37 +115,44 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
     }
   }, [selectedAdresse, collegeFeature, map, isMobileDevice])
 
-  useEffect(() => {
-    if (!collegeItineraire && map.current.isStyleLoaded && map.current.getSource('itineraire') && map.current.getLayer('itineraire-line')) {
-      map.current.removeLayer('itineraire-line')
-      layersLoaded.current = false
-    } else if (!collegeItineraire) {
-      return
-    }
+  const createOrChangeSource = useCallback(() => {
+    if (collegeItineraire) {
+      if (!sourcesLoaded.current) {
+        map.current.addSource('itineraire', {
+          type: 'geojson',
+          data: {
+            type: 'Feature',
+            geometry: collegeItineraire.geometry
+          }
+        })
 
-    if (!sourcesLoaded.current) {
-      map.current.addSource('itineraire', {
-        type: 'geojson',
-        data: {
-          type: 'Feature',
-          geometry: collegeItineraire.geometry
+        sourcesLoaded.current = true
+      }
+
+      if (!layersLoaded.current) {
+        map.current.addLayer(itineraireLayer)
+
+        layersLoaded.current = true
+      }
+
+      map.current.getSource('itineraire').setData({
+        type: 'Feature',
+        geometry: collegeItineraire?.geometry
+      })
+    }
+  }, [collegeItineraire])
+
+  const memorizedChangingSource = useMemo(() => createOrChangeSource, [createOrChangeSource])
+
+  useEffect(() => {
+    if (map.current) {
+      map.current.on('sourcedata', e => {
+        if (e.isSourceLoaded) {
+          memorizedChangingSource()
         }
       })
-
-      sourcesLoaded.current = true
     }
-
-    if (!layersLoaded.current) {
-      map.current.addLayer(itineraireLayer)
-
-      layersLoaded.current = true
-    }
-
-    map.current.getSource('itineraire').setData({
-      type: 'Feature',
-      geometry: collegeItineraire?.geometry
-    })
-  }, [collegeItineraire])
+  }, [map, memorizedChangingSource])
 
   return (
     <div ref={mapContainer} style={{width: '100%', height: '100%'}} />
