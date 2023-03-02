@@ -39,6 +39,7 @@ const Header = () => {
           display: flex;
           justify-content: space-between;
           flex-wrap: wrap;
+          align-items: center;
           gap: 2em;
         }
 
@@ -73,6 +74,7 @@ const Header = () => {
           gap: .5em;
           cursor: pointer;
           border-bottom: 2px solid transparent;
+          padding: 0;
         }
 
         header button:hover {
