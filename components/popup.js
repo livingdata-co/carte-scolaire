@@ -12,10 +12,6 @@ const Popup = ({title, children, onClose}) => {
   const modalRef = useRef()
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
-  }, [])
-
-  useEffect(() => {
     const listener = event => {
       if (!modalRef.current || modalRef.current.contains(event.target)) {
         return
