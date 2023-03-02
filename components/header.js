@@ -3,6 +3,7 @@ import Image from 'next/image'
 import {Info} from 'react-feather'
 
 import colors from '@/styles/colors.js'
+import {MOBILE_WIDTH} from '@/contexts/device.js'
 
 import Popup from '@/components/popup.js'
 import ModalContent from '@/components/modal-content.js'
@@ -14,14 +15,14 @@ const Header = () => {
   return (
     <header>
       <div className='presentation'>
-        <Image src='/images/logo-ld-short.png' width={30} height={33} />
+        <Image src='/images/logo-ld-short.png' width={30} height={33} alt='Logo Living Data' />
         <div className='head-title-container'>
           <h1 className='title'>Carte scolaire</h1>
         </div>
       </div>
 
       <button type='button' onClick={handleModal}>
-        <Info size={16} /> À propos
+        <Info size={24} /> <span>À propos</span>
       </button>
 
       {isModalOpen && (
@@ -41,6 +42,16 @@ const Header = () => {
           flex-wrap: wrap;
           align-items: center;
           gap: 2em;
+        }
+
+        @media (max-width: ${MOBILE_WIDTH}px) {
+          header {
+            padding: 1em;
+          }
+          
+          button span {
+            display: none;
+          }
         }
 
         .head-title-container {
