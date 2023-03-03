@@ -28,7 +28,91 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
   const collegePopup = useRef(null)
   const sourcesLoaded = useRef(false)
   const layersLoaded = useRef(false)
+  const otherCollegesPopup = useRef(null)
+  const selectedCollegeIdRef = useRef(null)
+  const selectedCollegeFeatureRef = useRef(collegeFeature)
   const map = useRef(null)
+
+  const toggleCollegeState = useCallback(collegeId => {
+    if (selectedCollegeIdRef.current === collegeId) {
+      map.current.setFeatureState({
+        source: 'secteurs',
+        sourceLayer: 'colleges',
+        id: selectedCollegeIdRef.current
+      }, {selected: false})
+
+      selectedCollegeIdRef.current = null
+      return
+    }
+
+    if (selectedCollegeIdRef.current) {
+      map.current.setFeatureState({
+        source: 'secteurs',
+        sourceLayer: 'colleges',
+        id: selectedCollegeIdRef.current
+      }, {selected: false})
+    }
+
+    selectedCollegeIdRef.current = collegeId
+
+    map.current.setFeatureState({
+      source: 'secteurs',
+      sourceLayer: 'colleges',
+      id: selectedCollegeIdRef.current
+    }, {selected: true})
+  }, [])
+
+  const changeSecteurOpacity = useCallback(() => {
+    if (selectedCollegeIdRef.current) {
+      map.current.setPaintProperty('secteurs-fill', 'fill-opacity',
+        [
+          'case',
+          ['==', ['get', 'codeRNE'], selectedCollegeIdRef.current],
+          0.4,
+          0.1
+        ])
+    }
+  }, [])
+
+  const toggleSecteursVisibility = useCallback(() => {
+    if (selectedCollegeIdRef.current) {
+      map.current.setLayoutProperty('secteurs-lines', 'visibility', 'visible')
+      map.current.setLayoutProperty('secteurs-fill', 'visibility', 'visible')
+    } else {
+      map.current.setLayoutProperty('secteurs-lines', 'visibility', 'none')
+      map.current.setLayoutProperty('secteurs-fill', 'visibility', 'none')
+    }
+  }, [])
+
+  const handleSelectedCollegeClick = useCallback(collegeId => {
+    toggleCollegeState(collegeId)
+    toggleSecteursVisibility(collegeId)
+    changeSecteurOpacity(collegeId)
+  }, [changeSecteurOpacity, toggleCollegeState, toggleSecteursVisibility])
+
+  const handleCollegeClick = useCallback((e, selectedCollegeFeatureRef) => {
+    toggleCollegeState(e.features[0].id)
+    toggleSecteursVisibility(e.features[0].id)
+    changeSecteurOpacity(e.features[0].id)
+
+    if (otherCollegesPopup.current) {
+      otherCollegesPopup.current.remove()
+    }
+
+    if (otherCollegesPopup.current && !selectedCollegeIdRef.current) {
+      otherCollegesPopup.current.remove()
+      return
+    }
+
+    if (e.features[0].properties.codeRNE !== selectedCollegeFeatureRef?.current?.properties?.codeRNE) {
+      const currentOtherCollegesPopup = new maplibregl.Popup({offset: 25})
+        .setLngLat(e.lngLat)
+        .setText(e.features[0].properties.nom)
+        .addTo(map.current)
+
+      otherCollegesPopup.current = currentOtherCollegesPopup
+    }
+  }, [changeSecteurOpacity, toggleCollegeState, toggleSecteursVisibility])
 
   useEffect(() => {
     const maplibre = new maplibregl.Map({
@@ -60,9 +144,11 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
   useEffect(() => {
     if (selectedAdresse && collegeFeature && map?.current) {
       const adressePosition = selectedAdresse.geometry.coordinates
+      selectedCollegeFeatureRef.current = collegeFeature
 
       const adresseMarkerElement = document.createElement('div') // eslint-disable-line no-undef
       const collegeMarkerElement = document.createElement('div') // eslint-disable-line no-undef
+      collegeMarkerElement.style.cursor = 'pointer'
 
       const currentAdressePopup = new maplibregl.Popup({offset: 25, closeOnClick: false, closeButton: false})
         .setLngLat(adressePosition)
@@ -84,6 +170,10 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
 
       currentAdresseMarker.getElement().innerHTML = `<img width="${isMobileDevice ? '400px' : ''}" src="/images/map/home.svg">`
       currentCollegeMarker.getElement().innerHTML = `<img width="${isMobileDevice ? '400px' : ''}" src="/images/map/school.svg">`
+
+      collegeMarkerElement.addEventListener('click', () => {
+        handleSelectedCollegeClick(collegeFeature.properties.codeRNE)
+      })
 
       adresseMarker.current = currentAdresseMarker
       adressePopup.current = currentAdressePopup
@@ -113,7 +203,7 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
         collegePopup.current.remove()
       }
     }
-  }, [selectedAdresse, collegeFeature, map, isMobileDevice])
+  }, [selectedAdresse, collegeFeature, map, isMobileDevice, handleSelectedCollegeClick])
 
   const createOrChangeSource = useCallback(() => {
     if (collegeItineraire) {
@@ -135,12 +225,21 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
         layersLoaded.current = true
       }
 
+      if (map.current.getLayer('colleges')) {
+        map.current.setFilter('colleges', [
+          'all',
+          ['==', 'secteur', 'Public'],
+          ['!has', 'erreur'],
+          ['!=', 'codeRNE', collegeFeature.properties.codeRNE]
+        ])
+      }
+
       map.current.getSource('itineraire').setData({
         type: 'Feature',
         geometry: collegeItineraire?.geometry
       })
     }
-  }, [collegeItineraire])
+  }, [collegeItineraire, collegeFeature])
 
   const memorizedChangingSource = useMemo(() => createOrChangeSource, [createOrChangeSource])
 
@@ -153,6 +252,30 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
       })
     }
   }, [map, memorizedChangingSource])
+
+  const onCollegeHover = () => {
+    map.current.getCanvas().style.cursor = 'pointer'
+  }
+
+  const onCollegeLeave = () => {
+    map.current.getCanvas().style.cursor = 'grab'
+  }
+
+  useEffect(() => {
+    if (!map.current) {
+      return
+    }
+
+    map.current.on('click', 'colleges', e => handleCollegeClick(e, selectedCollegeFeatureRef))
+    map.current.on('mousemove', 'colleges', onCollegeHover)
+    map.current.on('mouseleave', 'colleges', onCollegeLeave)
+
+    return () => {
+      map.current.off('click', 'colleges', e => handleCollegeClick(e, selectedCollegeFeatureRef))
+      map.current.off('mousemove', 'colleges', onCollegeHover)
+      map.current.off('mouseleave', 'colleges', onCollegeLeave)
+    }
+  }, [map, handleCollegeClick, selectedCollegeFeatureRef])
 
   return (
     <div ref={mapContainer} style={{width: '100%', height: '100%'}} />
