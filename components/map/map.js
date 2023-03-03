@@ -120,8 +120,12 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
       container: mapContainer.current,
       style: 'https://openmaptiles.geo.data.gouv.fr/styles/osm-bright/style.json',
       center: [1.7, 46.9],
-      zoom: 4
+      zoom: 4,
+      attributionControl: false
     })
+      .addControl(new maplibregl.AttributionControl({
+        compact: false
+      }))
 
     maplibre.once('load', () => {
       maplibre.addControl(new maplibregl.NavigationControl({showCompass: false}))
