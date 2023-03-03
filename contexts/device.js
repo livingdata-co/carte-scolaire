@@ -2,7 +2,7 @@
 
 import {useEffect, createContext, useState, useMemo} from 'react'
 
-const MOBILE_WIDTH = 992
+export const MOBILE_WIDTH = 992
 
 const DeviceContext = createContext()
 

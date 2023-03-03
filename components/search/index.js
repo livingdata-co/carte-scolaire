@@ -2,6 +2,8 @@ import {useState, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {debounce} from 'lodash-es'
 
+import {MOBILE_WIDTH} from '@/contexts/device.js'
+
 import AutocompleteInput from '@/components/search/autocomplete-input.js'
 import renderAddok from '@/components/search/render-addok.js'
 
@@ -11,58 +13,39 @@ import {useInput} from '@/hooks/input.js'
 
 import colors from '@/styles/colors.js'
 
-const Search = ({onSelectAdresse, onSelectCollege, onSelectCollegeFeature, onSelectCollegeItineraire}) => {
+const Search = ({handleFocus, onSelectAdresse, onSelectCollege, onSelectCollegeFeature, onSelectCollegeItineraire}) => {
   const [input, setInput] = useInput('')
   const [results, setResults] = useState([])
   const [orderResults, setOrderResults] = useState([])
+  const [isForceBlur, setIsForceBlur] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  const getCollege = async coordinates => {
-    try {
-      const college = await secteur(coordinates)
-      return college
-    } catch (error) {
-      setError(error)
-    }
-  }
-
-  const getFeature = async codeRNE => {
-    try {
-      const collegeFeature = await getCollegeFeature(codeRNE)
-      return collegeFeature
-    } catch (error) {
-      setError(error)
-    }
-  }
-
-  const getItineraire = async (start, end) => {
-    try {
-      const itineraire = await getCollegeItineraire(start, end)
-      return itineraire
-    } catch (error) {
-      setError(error)
-    }
-  }
-
   const handleSelect = async feature => {
+    setIsForceBlur(false)
     const {label} = feature.properties
     setInput(label)
 
-    const college = await getCollege(feature.geometry.coordinates)
+    try {
+      const college = await secteur(feature.geometry.coordinates)
 
-    onSelectAdresse(feature)
-    onSelectCollege(college)
+      onSelectAdresse(feature)
+      onSelectCollege(college)
 
-    if (college.properties.erreur) {
-      onSelectCollegeFeature(null)
-      onSelectCollegeItineraire(null)
-    } else {
-      const collegeFeature = await getFeature(college.properties.codeRNE)
-      onSelectCollegeFeature(collegeFeature)
-      const itineraire = await getItineraire(feature.geometry.coordinates, collegeFeature.geometry.coordinates)
-      onSelectCollegeItineraire(itineraire)
+      if (college.properties.erreur) {
+        onSelectCollegeFeature(null)
+        onSelectCollegeItineraire(null)
+      } else {
+        const collegeFeature = await getCollegeFeature(college.properties.codeRNE)
+        onSelectCollegeFeature(collegeFeature)
+        const itineraire = await getCollegeItineraire(feature.geometry.coordinates, collegeFeature.geometry.coordinates)
+        onSelectCollegeItineraire(itineraire)
+      }
+    } catch (error) {
+      setError(error)
     }
+
+    setIsForceBlur(true)
   }
 
   const handleSearch = useCallback(debounce(async input => {
@@ -129,6 +112,8 @@ const Search = ({onSelectAdresse, onSelectCollege, onSelectCollegeFeature, onSel
         ariaLabel='Recherche'
         results={orderResults}
         isLoading={loading}
+        isBlur={isForceBlur}
+        handleFocus={handleFocus}
         getItemValue={getFeatureValue}
         onRenderItem={renderAddok}
         onValueChange={setInput}
@@ -144,7 +129,13 @@ const Search = ({onSelectAdresse, onSelectCollege, onSelectCollegeFeature, onSel
 
       <style jsx>{`
         .search-wrapper {
-          margin-top: 1.5em;
+          margin: 1em 0 1em 0;
+        }
+
+        @media (max-width: ${MOBILE_WIDTH}px) {
+          .search-wrapper {
+            margin: 0;
+          } 
         }
 
         .error {
@@ -166,6 +157,7 @@ const Search = ({onSelectAdresse, onSelectCollege, onSelectCollegeFeature, onSel
 }
 
 Search.propTypes = {
+  handleFocus: PropTypes.func.isRequired,
   onSelectAdresse: PropTypes.func.isRequired,
   onSelectCollege: PropTypes.func.isRequired,
   onSelectCollegeFeature: PropTypes.func.isRequired,
