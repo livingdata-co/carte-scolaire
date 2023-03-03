@@ -4,6 +4,7 @@ import maplibregl from 'maplibre-gl'
 
 import {sources} from '@/components/map/sources.js'
 import {layers} from '@/components/map/layers.js'
+import Legend from '@/components/map/legend.js'
 import colors from '@/styles/colors.js'
 
 const itineraireLayer = {
@@ -278,7 +279,10 @@ const Map = ({selectedAdresse, collegeFeature, collegeItineraire, isMobileDevice
   }, [map, handleCollegeClick, selectedCollegeFeatureRef])
 
   return (
-    <div ref={mapContainer} style={{width: '100%', height: '100%'}} />
+    <>
+      <Legend />
+      <div ref={mapContainer} style={{width: '100%', height: '100%'}} />
+    </>
   )
 }
 
