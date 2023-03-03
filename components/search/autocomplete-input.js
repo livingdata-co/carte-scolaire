@@ -1,7 +1,9 @@
-import {useCallback} from 'react'
+import {useCallback, useEffect, useRef} from 'react'
 import PropTypes from 'prop-types'
 import Autocomplete from 'react-autocomplete'
 import {Search} from 'react-feather'
+
+import {MOBILE_WIDTH} from '@/contexts/device.js'
 
 import Loader from '@/components/loader.js'
 import colors from '@/styles/colors.js'
@@ -13,11 +15,15 @@ const AutocompleteInput = ({
   ariaLabel,
   results,
   isLoading,
+  isBlur,
   getItemValue,
+  handleFocus,
   onRenderItem,
   onValueChange,
   onSelectValue
 }) => {
+  const inputRef = useRef()
+
   const handleSearch = useCallback(event => {
     onValueChange(event.target.value)
   }, [onValueChange])
@@ -29,7 +35,7 @@ const AutocompleteInput = ({
   const renderInput = props => (
     <>
       {label && (
-        <div style={{margin: '.5em', textAlign: 'center', color: colors.darkGrey, fontWeight: 'bold', fontSize: '1.1em'}}>{label}</div>
+        <div className='input-label'>{label}</div>
       )}
       <div className='search-input-container' role='search'>
         <input
@@ -42,56 +48,72 @@ const AutocompleteInput = ({
 
         <span className='icon'><Search alt='' aria-hidden='true' /></span>
 
-        <style jsx>{`
-          .search-input-container {
-            position: relative;
-            padding: 0.5em 1em;
-          }
-
-          .search {
-            background-color: ${colors.darkGrey};
-            border: 1px solid ${colors.black};
-            border-radius: 5px;
-            color: ${colors.white};
-            display: block;
-            font-family: inherit;
-            font-size: 14px;
-            height: 56px;
-            padding: 7px;
-            padding-right: 2.5em;
-            width: 100%;
-          }
-
-          ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-            color: ${colors.grey};
-            font-size: 1.1em;
-            font-style: italic;
-            opacity: 1; /* Firefox */
-          }
-
-          ::-ms-input-placeholder { /* Microsoft Edge */
-            color: ${colors.grey};
-          }
-
-          .icon {
-            display: inline-flex;
-            padding: 1em;
-            background-color: ${colors.darkGreen};
-            color: ${colors.white};
-            vertical-align: top;
-            position: absolute;
-            right: 1em;
-            border-radius: 0 3px 3px 0;
-            top: 50%;
-            transform: translateY(-50%);
-          }
-
-          input {
-            text-indent: 1em;
-            color: ${colors.white};
-          }
-        `}</style>
       </div>
+
+      <style jsx>{`
+        .input-label {
+          margin: .5em;
+          text-align: center;
+          color: colors.darkGrey;
+          font-weight: bold;
+          font-size: 1rem;
+        }
+
+        @media (max-width: ${MOBILE_WIDTH}px) {
+          .input-label {
+            display: none;
+          }
+        }
+
+        .search-input-container {
+          position: relative;
+          padding: 0.5em 1em;
+        }
+
+        .search {
+          background-color: ${colors.darkGrey};
+          border: 1px solid ${colors.black};
+          border-radius: 5px;
+          color: ${colors.white};
+          display: block;
+          font-family: inherit;
+          font-size: 14px;
+          height: 56px;
+          padding: 5px;
+          width: calc(100% - 53px);
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+          color: ${colors.grey};
+          font-size: 1rem;
+          font-style: italic;
+          opacity: 1; /* Firefox */
+        }
+
+        ::-ms-input-placeholder { /* Microsoft Edge */
+          color: ${colors.grey};
+        }
+
+        .icon {
+          display: inline-flex;
+          padding: 1em;
+          background-color: ${colors.darkGreen};
+          color: ${colors.white};
+          vertical-align: top;
+          position: absolute;
+          right: 1em;
+          border-radius: 0 3px 3px 0;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+
+        input {
+          text-indent: 1em;
+          color: ${colors.white};
+        }
+      `}</style>
     </>
   )
 
@@ -137,10 +159,22 @@ const AutocompleteInput = ({
     </div>
   ), [isLoading])
 
+  useEffect(() => {
+    if (inputRef.current && isBlur) {
+      inputRef.current.blur()
+      handleFocus(false)
+    }
+  }, [isBlur, handleFocus])
+
   return (
     <Autocomplete
+      ref={inputRef}
       value={value}
       items={results}
+      inputProps={{
+        onFocus: () => handleFocus(true),
+        onBlur: () => handleFocus(false)
+      }}
       renderItem={(item, isHighlighted) => onRenderItem(item, isHighlighted)}
       renderMenu={renderMenu}
       renderInput={renderInput}
@@ -159,7 +193,9 @@ AutocompleteInput.propTypes = {
   ariaLabel: PropTypes.string,
   results: PropTypes.array.isRequired,
   isLoading: PropTypes.bool.isRequired,
+  isBlur: PropTypes.bool.isRequired,
   getItemValue: PropTypes.func.isRequired,
+  handleFocus: PropTypes.func,
   onRenderItem: PropTypes.func.isRequired,
   onValueChange: PropTypes.func.isRequired,
   onSelectValue: PropTypes.func.isRequired
@@ -169,7 +205,8 @@ AutocompleteInput.defaultProps = {
   label: '',
   value: '',
   placeholder: null,
-  ariaLabel: null
+  ariaLabel: null,
+  handleFocus: () => ({})
 }
 
 export default AutocompleteInput

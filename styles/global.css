@@ -34,3 +34,8 @@ html,
   font-weight: normal;
   font-size: 1em;
 }
+
+main {
+  display: flex;
+  flex: 1;
+}

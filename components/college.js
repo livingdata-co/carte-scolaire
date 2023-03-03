@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types'
 
 import colors from '@/styles/colors.js'
+import {MOBILE_WIDTH} from '@/contexts/device.js'
+
 import {getCodeDepartement} from '@/lib/util/adresse.js'
 
 function formatDistance(distance) {
@@ -42,6 +44,12 @@ const College = ({college, itineraire}) => (
 
       .college-duration {
         margin-bottom: 5px;
+      }
+
+      @media (max-width: ${MOBILE_WIDTH}px) {
+        .college-container {
+          font-size: small;
+        }
       }
     `}
     </style>
