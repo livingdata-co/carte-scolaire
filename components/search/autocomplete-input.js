@@ -68,6 +68,7 @@ const AutocompleteInput = ({
         .search-input-container {
           position: relative;
           padding: 0.5em 1em;
+          z-index: 1;
         }
 
         .search {
