@@ -15,7 +15,7 @@ const Header = () => {
   return (
     <header>
       <div className='presentation'>
-        <Image src='/images/logo-ld-short.png' width={30} height={33} alt='Logo Living Data' />
+        <Image src='/images/logo-ld-short.png' width={58} height={65} alt='Logo Living Data' />
         <div className='head-title-container'>
           <h1 className='title'>Carte scolaire</h1>
         </div>
@@ -34,21 +34,21 @@ const Header = () => {
       <style jsx>{`
         header {
           margin: 0;
-          padding: 1.5em 1.5em 1.5em 3em;
+          padding: 1em 1.5em 1em 3em;
           color: ${colors.white};
           background: ${colors.darkGrey};
           display: flex;
           justify-content: space-between;
           flex-wrap: wrap;
           align-items: center;
-          gap: 2em;
+          gap: 1em;
         }
 
         @media (max-width: ${MOBILE_WIDTH}px) {
           header {
             padding: 1em;
           }
-          
+
           button span {
             display: none;
           }
@@ -57,7 +57,7 @@ const Header = () => {
         .head-title-container {
           display: flex;
           align-items: center;
-          height: 36px;
+          height: 65px;
           border-left: 4px solid rgba(255, 255, 255, 0.33);
           padding-left: 10px;
         }
