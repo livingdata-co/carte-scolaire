@@ -33,7 +33,7 @@ const Main = ({children}) => {
     <>
       <Head>
         <title>Carte scolaire - Living Data</title>
-        <link rel='icon' type='image/png' sizes='503x565' href='/images/logo-ld-short-colored.png' />
+        <link rel='icon' type='image/x-icon' sizes='32x32' href='/images/favicon.ico' />
         <meta name='description' content='Rechercher le collège de rattachement d’une adresse donnée.' />
         <meta name='author' content='Living Data' />
         <meta name='viewport' content='initial-scale=1.0, width=device-width, maximum-scale=1' />
@@ -54,7 +54,7 @@ const Main = ({children}) => {
         <meta property='og:image' content='https://carte-scolaire.livingdata.co/images/logo-ld-short-colored.png' />
         <meta property='og:image:secure_url' content='https://carte-scolaire.livingdata.co/images/logo-ld-short-colored.png' />
         <meta property='og:image:type' content='image/png' />
-        <meta property='og:image:width' content='500' />
+        <meta property='og:image:width' content='503' />
         <meta property='og:image:height' content='565' />
         <meta property='og:image:alt' content='Logo Living Data' />
       </Head>
